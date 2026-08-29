@@ -32,14 +32,14 @@ const PLATFORMS = {
     linkValue: l => l.short_link,
     toRow: p => {
       const c = shopeeCard(p);
+      const original = microBaht(c.price_min_before_discount ?? c.price_before_discount ?? c.price_max_before_discount);
+      const discount = pctNum(c.discount ?? c.raw_discount ?? c.show_discount);
       return {
         item_id:         idOrNull(c.itemid ?? p?.item_id ?? p?.source_item_id),
         name:            c.name ?? p?.name ?? p?.title ?? null,
-        // price_min is the "from" price shown on cards; `price` can be 0/tiny for
-        // multi-variation items until a variant is picked.
-        price:           microBaht(c.price_min ?? c.price ?? c.price_max ?? p?.price),
-        original_price:  microBaht(c.price_min_before_discount ?? c.price_before_discount ?? c.price_max_before_discount),
-        discount:        pctNum(c.discount ?? c.raw_discount ?? c.show_discount),
+        price:           shopeePrice(microBaht(c.price_min ?? c.price ?? c.price_max ?? p?.price), original, discount),
+        original_price:  original,
+        discount:        discount,
         commission_rate: pctNum(p?.seller_commission_rate ?? p?.default_commission_rate ?? p?.commission_rate ?? p?.max_commission_rate),
         rating:          round1(c.item_rating?.rating_star),
         sold:            numOrNull(c.historical_sold ?? c.sold),
@@ -96,6 +96,19 @@ function pctNum(v) {
 function microBaht(v) {
   const n = numOrNull(v);
   return n === null ? null : Math.round(n / 1000) / 100;
+}
+
+/**
+ * A ฿0–1 headline price is almost always a Shopee new-user / exclusive-price
+ * artifact (the card still shows a real price). Fall back to the price Shopee
+ * actually displays: before-discount price minus the card discount %.
+ */
+function shopeePrice(price, original, discountPct) {
+  if (price != null && price >= 10) return price;
+  if (original != null && original > 50) {
+    return discountPct != null ? Math.round(original * (1 - discountPct / 100)) : original;
+  }
+  return price;
 }
 
 function round1(v) {
