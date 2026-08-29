@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<base target="_top" />
+<style>
+  :root { --accent:#0D9488; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --bg:#f8fafc; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif; color:var(--ink); background:var(--bg); font-size:13px; }
+  header { background:#fff; border-bottom:1px solid var(--line); padding:12px 16px; position:sticky; top:0; z-index:5; }
+  h1 { font-size:16px; margin-bottom:6px; }
+  .counts { display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; }
+  .counts b { color:var(--ink); }
+  .jobs { margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+  button { border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:7px; padding:6px 10px; font-size:12px; cursor:pointer; }
+  button:hover { background:#f1f5f9; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.primary:hover { opacity:.9; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  main { padding:14px 16px 60px; }
+  .item { background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:10px; display:grid;
+    grid-template-columns:72px 1fr; gap:10px; }
+  .item.hidden { opacity:.55; }
+  .item img, .item .item-img { width:72px; height:72px; object-fit:cover; border-radius:6px; background:#eef2f5; }
+  .meta { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; }
+  .meta .name { font-weight:600; }
+  .meta .tag { font-size:11px; color:var(--muted); }
+  .badge { font-size:10px; font-weight:700; padding:2px 6px; border-radius:999px; text-transform:uppercase; }
+  .badge.new { background:#fee2e2; color:#b91c1c; }
+  .badge.generated { background:#ccfbf1; color:#0f766e; }
+  .badge.posted { background:#dcfce7; color:#15803d; }
+  textarea { width:100%; margin-top:6px; border:1px solid var(--line); border-radius:6px; padding:7px; font:inherit; min-height:70px; resize:vertical; }
+  .acts { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
+  #msg { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); background:var(--ink); color:#fff;
+    padding:8px 14px; border-radius:8px; font-size:12px; opacity:0; transition:opacity .2s; pointer-events:none; }
+  #msg.show { opacity:1; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>⚙️ Affiliate Admin</h1>
+    <div class="counts" id="counts">กำลังโหลด…</div>
+    <div class="jobs">
+      <button onclick="job('syncContent')">↻ sync สินค้าใหม่</button>
+      <button onclick="job('generateCaptions')">✨ gen แคปชั่นที่ค้าง</button>
+      <button class="primary" onclick="job('postNextToPage')">📣 โพสต์ชุดถัดไป</button>
+      <button onclick="load()">🔄 refresh</button>
+    </div>
+  </header>
+
+  <main id="list"></main>
+  <div id="msg"></div>
+
+<script>
+  var KEY = <?!= JSON.stringify(adminKey) ?>;
+  var ROWS = [];
+
+  function toast(t) {
+    var m = document.getElementById('msg');
+    m.textContent = t; m.classList.add('show');
+    setTimeout(function () { m.classList.remove('show'); }, 2200);
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function load() {
+    google.script.run
+      .withSuccessHandler(function (res) {
+        ROWS = res.rows || [];
+        var c = res.counts || {};
+        document.getElementById('counts').innerHTML =
+          'ทั้งหมด <b>' + c.total + '</b> · ยังไม่มีแคปชั่น <b>' + c.needCaption +
+          '</b> · พร้อมโพสต์ <b>' + c.ready + '</b> · โพสต์แล้ว <b>' + c.posted +
+          '</b> · ซ่อน <b>' + c.hidden + '</b>';
+        render();
+      })
+      .withFailureHandler(function (e) { toast(String(e.message || e)); })
+      .adminData(KEY);
+  }
+
+  function render() {
+    document.getElementById('list').innerHTML = ROWS.map(function (r) {
+      var badge = r.status === 'posted' ? 'posted' : (r.caption ? 'generated' : 'new');
+      var label = badge === 'posted' ? 'โพสต์แล้ว' : (badge === 'generated' ? 'พร้อม' : 'ยังไม่มี');
+      return '' +
+      '<div class="item ' + (r.hidden ? 'hidden' : '') + '" data-row="' + r.row + '">' +
+        (r.image ? '<img src="' + esc(r.image) + '" alt="">' : '<div class="item-img"></div>') +
+        '<div>' +
+          '<div class="meta">' +
+            '<span class="name">' + esc(r.name || ('#' + r.id)) + '</span>' +
+            '<span class="tag">' + esc(r.platform) + (r.price ? ' · ฿' + Number(r.price).toLocaleString() : '') +
+              (r.commission ? ' · คอม ' + r.commission + '%' : '') + '</span>' +
+            '<span class="badge ' + badge + '">' + label + '</span>' +
+          '</div>' +
+          '<textarea>' + esc(r.caption) + '</textarea>' +
+          '<div class="acts">' +
+            '<button class="primary" onclick="save(this)">บันทึก</button>' +
+            '<button onclick="regen(this)">✨ gen ใหม่</button>' +
+            '<button onclick="postNow(this)">📣 โพสต์เลย</button>' +
+            '<button onclick="toggleHidden(this,' + (r.hidden ? 'false' : 'true') + ')">' +
+              (r.hidden ? '👁 แสดง' : '🚫 ซ่อน') + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function rowOf(btn) { return Number(btn.closest('.item').dataset.row); }
+  function busy(btn, on) { btn.closest('.acts').querySelectorAll('button').forEach(function (b) { b.disabled = on; }); }
+
+  function save(btn) {
+    var row = rowOf(btn), text = btn.closest('.item').querySelector('textarea').value;
+    busy(btn, true);
+    google.script.run
+      .withSuccessHandler(function () { busy(btn, false); toast('บันทึกแล้ว'); load(); })
+      .withFailureHandler(function (e) { busy(btn, false); toast(String(e.message || e)); })
+      .adminSaveCaption(KEY, row, text);
+  }
+
+  function regen(btn) {
+    busy(btn, true); toast('กำลัง gen…');
+    google.script.run
+      .withSuccessHandler(function (caption) {
+        btn.closest('.item').querySelector('textarea').value = caption;
+        busy(btn, false); toast('gen เสร็จ — กดบันทึกถ้าโอเค'); load();
+      })
+      .withFailureHandler(function (e) { busy(btn, false); toast(String(e.message || e)); })
+      .adminRegenerate(KEY, rowOf(btn));
+  }
+
+  function postNow(btn) {
+    if (!confirm('โพสต์รายการนี้ขึ้น FB Page เลยไหม?')) return;
+    busy(btn, true); toast('กำลังโพสต์…');
+    google.script.run
+      .withSuccessHandler(function () { busy(btn, false); toast('โพสต์แล้ว'); load(); })
+      .withFailureHandler(function (e) { busy(btn, false); toast(String(e.message || e)); })
+      .adminPostNow(KEY, rowOf(btn));
+  }
+
+  function toggleHidden(btn, hide) {
+    busy(btn, true);
+    google.script.run
+      .withSuccessHandler(function () { busy(btn, false); load(); })
+      .withFailureHandler(function (e) { busy(btn, false); toast(String(e.message || e)); })
+      .adminToggleHidden(KEY, rowOf(btn), hide);
+  }
+
+  function job(name) {
+    toast('กำลังรัน ' + name + '…');
+    google.script.run
+      .withSuccessHandler(function (r) { toast(name + ' → ' + (r && r.n)); load(); })
+      .withFailureHandler(function (e) { toast(String(e.message || e)); })
+      .adminRunJob(KEY, name);
+  }
+
+  load();
+</script>
+</body>
+</html>

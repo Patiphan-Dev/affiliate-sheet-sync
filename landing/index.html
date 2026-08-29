@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>รวมดีลเด็ด — Shopee &amp; Lazada</title>
+<meta name="description" content="รวมดีลสินค้าราคาดีจาก Shopee และ Lazada อัปเดตอัตโนมัติ" />
+<style>
+  :root{
+    --accent:#0D9488; --accent-soft:#ccfbf1; --accent-ink:#0f766e;
+    --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --bg:#f8fafc; --card:#fff;
+    --radius:14px; --shadow:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --ink:#e2e8f0; --muted:#94a3b8; --line:#1e293b; --bg:#0b1220; --card:#111a2e;
+      --accent-soft:#134e4a; --accent-ink:#5eead4; --shadow:0 1px 3px rgba(0,0,0,.4); }
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:system-ui,-apple-system,"Noto Sans Thai",Segoe UI,sans-serif; color:var(--ink);
+    background:var(--bg); line-height:1.55; -webkit-font-smoothing:antialiased; }
+
+  /* Header */
+  .nav{ position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--bg) 85%,transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+  .nav-in{ max-width:1120px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand{ font-weight:800; font-size:16px; display:flex; align-items:center; gap:7px; }
+  .brand .dot{ width:9px; height:9px; border-radius:50%; background:var(--accent); }
+  .nav .count{ font-size:12px; color:var(--muted); }
+
+  /* Hero */
+  .hero{ max-width:1120px; margin:0 auto; padding:44px 20px 26px; }
+  .hero h1{ font-size:clamp(24px,4vw,38px); line-height:1.2; letter-spacing:-.02em; }
+  .hero p{ margin-top:10px; color:var(--muted); font-size:15px; max-width:52ch; }
+  .hero .meta{ margin-top:14px; font-size:12px; color:var(--muted); }
+
+  /* Controls */
+  .bar{ position:sticky; top:53px; z-index:15; background:var(--bg); border-bottom:1px solid var(--line); }
+  .bar-in{ max-width:1120px; margin:0 auto; padding:12px 20px; display:flex; gap:8px; flex-wrap:wrap; }
+  .bar input,.bar select{ border:1px solid var(--line); border-radius:10px; padding:9px 12px; font-size:13px;
+    background:var(--card); color:var(--ink); outline:none; }
+  .bar input{ flex:1; min-width:200px; }
+  .bar input:focus,.bar select:focus{ border-color:var(--accent); }
+  .chip{ font-size:12px; padding:9px 12px; border:1px solid var(--line); border-radius:999px; background:var(--card);
+    color:var(--muted); cursor:pointer; }
+  .chip.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  /* Grid */
+  main{ max-width:1120px; margin:20px auto 60px; padding:0 20px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    display:flex; flex-direction:column; box-shadow:var(--shadow); transition:transform .12s,box-shadow .12s; }
+  .card:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,23,42,.10); }
+  .thumb{ position:relative; aspect-ratio:1/1; background:linear-gradient(135deg,#eef2f5,#e2e8f0); }
+  .thumb img{ width:100%; height:100%; object-fit:cover; }
+  .thumb .plat{ position:absolute; top:8px; left:8px; font-size:10px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5px; background:rgba(15,23,42,.72); color:#fff; padding:3px 7px; border-radius:6px; }
+  .card .b{ padding:11px 13px 13px; display:flex; flex-direction:column; gap:7px; flex:1; }
+  .nm{ font-size:13px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.8em; }
+  .pr{ display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:auto; }
+  .pr .p{ font-weight:800; font-size:16px; }
+  .pr .c{ font-size:11px; font-weight:700; color:var(--accent-ink); background:var(--accent-soft); padding:3px 7px; border-radius:999px; white-space:nowrap; }
+  .buy{ margin-top:3px; text-align:center; text-decoration:none; background:var(--accent); color:#fff;
+    font-size:13px; font-weight:700; padding:9px; border-radius:9px; }
+  .buy:active{ transform:translateY(1px); }
+
+  .state{ text-align:center; color:var(--muted); font-size:14px; padding:60px 20px; }
+  .skeleton .card{ pointer-events:none; }
+  .skeleton .thumb{ animation:pulse 1.4s ease-in-out infinite; }
+  .skeleton .nm,.skeleton .pr{ background:var(--line); border-radius:6px; color:transparent; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.55} }
+
+  footer{ border-top:1px solid var(--line); }
+  .foot-in{ max-width:1120px; margin:0 auto; padding:22px 20px; font-size:12px; color:var(--muted);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <div class="brand"><span class="dot"></span> รวมดีลเด็ด</div>
+    <div class="count" id="count"></div>
+  </div>
+</nav>
+
+<header class="hero">
+  <h1>ดีลราคาดีจาก Shopee &amp; Lazada</h1>
+  <p>คัดสินค้าน่าซื้อ อัปเดตอัตโนมัติจากทีมงาน กดเข้าไปซื้อได้ทันทีในราคาพิเศษ</p>
+  <div class="meta" id="updated"></div>
+</header>
+
+<div class="bar">
+  <div class="bar-in">
+    <input id="q" type="search" placeholder="ค้นหาสินค้า…" autocomplete="off" />
+    <span class="chip on" data-plat="">ทั้งหมด</span>
+    <span class="chip" data-plat="shopee">Shopee</span>
+    <span class="chip" data-plat="lazada">Lazada</span>
+    <select id="sort">
+      <option value="new">ใหม่ล่าสุด</option>
+      <option value="comm">คอมมิชชั่นสูง</option>
+      <option value="cheap">ราคาถูก → แพง</option>
+      <option value="pricey">ราคาแพง → ถูก</option>
+    </select>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="state" id="state">กำลังโหลดสินค้า…</div>
+</main>
+
+<footer>
+  <div class="foot-in">
+    <span>รวมดีลเด็ด · ราคาและสต็อกอาจเปลี่ยนแปลง โปรดตรวจสอบที่หน้าร้านอีกครั้ง</span>
+    <span id="foot-count"></span>
+  </div>
+</footer>
+
+<script>
+  /* ── ตั้งค่า: URL ของ Apps Script web app (ลงท้าย /exec) ───────────────────── */
+  var FEED_URL = 'https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXXXXX/exec';
+  var FEED_LIMIT = 500;
+  /* ────────────────────────────────────────────────────────────────────────── */
+
+  var ALL = [];
+  var state = { q: '', plat: '', sort: 'new' };
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function cardHtml(it) {
+    var price = it.price ? '฿' + Number(it.price).toLocaleString() : '—';
+    var comm = it.commission ? '<span class="c">คอม ' + it.commission + '%</span>' : '';
+    var img = it.image
+      ? '<img loading="lazy" src="' + esc(it.image) + '" alt="' + esc(it.name) + '" onerror="this.style.display=\'none\'">'
+      : '';
+    return '<article class="card">' +
+      '<div class="thumb"><span class="plat">' + esc(it.platform) + '</span>' + img + '</div>' +
+      '<div class="b">' +
+        '<div class="nm">' + esc(it.name || 'สินค้า') + '</div>' +
+        '<div class="pr"><span class="p">' + price + '</span>' + comm + '</div>' +
+        '<a class="buy" href="' + esc(it.link) + '" target="_blank" rel="noopener nofollow">ซื้อเลย →</a>' +
+      '</div></article>';
+  }
+
+  function render() {
+    var q = state.q.toLowerCase();
+    var list = ALL.filter(function (it) {
+      if (state.plat && it.platform !== state.plat) return false;
+      if (q && it.name.toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    list.sort(function (a, b) {
+      if (state.sort === 'comm') return (b.commission || 0) - (a.commission || 0);
+      if (state.sort === 'cheap') return (a.price || 1e12) - (b.price || 1e12);
+      if (state.sort === 'pricey') return (b.price || 0) - (a.price || 0);
+      return String(b.updated_at).localeCompare(String(a.updated_at));
+    });
+
+    $('grid').innerHTML = list.map(cardHtml).join('');
+    $('grid').classList.remove('skeleton');
+    $('state').textContent = list.length ? '' : 'ไม่พบสินค้าตามเงื่อนไข';
+    $('count').textContent = list.length + ' / ' + ALL.length + ' รายการ';
+    $('foot-count').textContent = ALL.length + ' รายการทั้งหมด';
+  }
+
+  $('q').addEventListener('input', function (e) { state.q = e.target.value.trim(); render(); });
+  $('sort').addEventListener('change', function (e) { state.sort = e.target.value; render(); });
+  document.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      document.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('on'); });
+      chip.classList.add('on');
+      state.plat = chip.dataset.plat;
+      render();
+    });
+  });
+
+  function showSkeleton() {
+    var s = '';
+    for (var i = 0; i < 10; i++) s += '<article class="card"><div class="thumb"></div><div class="b"><div class="nm">&nbsp;</div><div class="pr">&nbsp;</div></div></article>';
+    $('grid').className = 'grid skeleton';
+    $('grid').innerHTML = s;
+  }
+
+  function load() {
+    showSkeleton();
+    fetch(FEED_URL + '?page=feed&limit=' + FEED_LIMIT, { redirect: 'follow' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (data) {
+        ALL = (data && data.items) || [];
+        if (ALL.length) {
+          var latest = ALL.map(function (i) { return i.updated_at; }).sort().pop();
+          if (latest) $('updated').textContent = 'อัปเดตล่าสุด ' + new Date(latest).toLocaleString('th-TH');
+        }
+        render();
+      })
+      .catch(function (err) {
+        $('grid').className = 'grid';
+        $('grid').innerHTML = '';
+        $('state').textContent = 'โหลดข้อมูลไม่ได้ (' + (err.message || err) + ') — ตรวจสอบ FEED_URL';
+      });
+  }
+
+  load();
+</script>
+</body>
+</html>

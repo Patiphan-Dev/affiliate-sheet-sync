@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<title>Affiliate Sheet Sync</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;font-size:13px;color:#1e293b;background:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── Header ── */
+.hdr{background:#1e293b;color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:#64748b;flex-shrink:0}
+.conn-dot.ok{background:#22c55e}
+.conn-dot.err{background:#ef4444}
+.hdr-right{display:flex;align-items:center;gap:8px}
+#connLabel{font-size:10px;color:#94a3b8}
+.gear-btn{background:none;border:none;color:#94a3b8;cursor:pointer;font-size:14px;padding:2px}
+.gear-btn:hover{color:#fff}
+
+/* ── Tabs ── */
+.tabs{display:flex;background:#fff;border-bottom:2px solid #f1f5f9;flex-shrink:0}
+.tab{flex:1;padding:9px 4px;border:none;background:none;font-size:12px;font-weight:600;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab.active{color:#1e293b;border-bottom-color:#0D9488}
+.tab:hover:not(.active){color:#334155;background:#f8fafc}
+
+/* ── Scroll area ── */
+.panel-body{flex:1;overflow-y:auto;padding:12px}
+.section{display:none}.section.active{display:block}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:8px;border:1px solid #e2e8f0;padding:12px;margin-bottom:10px}
+.card-title{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+
+/* ── Status banner ── */
+.status-banner{border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;font-weight:600}
+.status-banner.ok{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.status-banner.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.status-banner.err{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.status-icon{font-size:16px}
+
+/* ── Stat rows ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.stat-box{background:#f8fafc;border-radius:6px;padding:8px 10px}
+.stat-label{font-size:10px;color:#94a3b8;margin-bottom:2px}
+.stat-val{font-size:18px;font-weight:700;color:#1e293b}
+.stat-val.accent{color:#0D9488}
+.stat-val.green{color:#15803d}
+.stat-val.blue{color:#185FA5}
+
+/* ── Progress bar ── */
+.prog-wrap{margin-bottom:10px}
+.prog-label{font-size:10px;color:#64748b;margin-bottom:4px;display:flex;justify-content:space-between}
+.prog-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s}
+.prog-fill.accent{background:#0D9488}
+.prog-fill.green{background:#22c55e}
+.prog-fill.blue{background:#185FA5}
+
+/* ── Tips ── */
+.tips{background:#eff6ff;border-radius:6px;padding:8px 10px;margin-bottom:10px}
+.tips-title{font-size:10px;font-weight:700;color:#1d4ed8;margin-bottom:4px}
+.tip{font-size:11px;color:#1e40af;line-height:1.6;display:flex;gap:4px}
+.tip::before{content:'•';flex-shrink:0}
+
+/* ── Buttons ── */
+.btn-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.btn{border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:#0D9488;color:#fff}
+.btn-navy{background:#185FA5;color:#fff}
+.btn-green{background:#15803d;color:#fff}
+.btn-ghost{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}
+
+/* ── Log ── */
+.log-list{max-height:160px;overflow-y:auto}
+.log-item{font-size:11px;padding:4px 0;border-bottom:1px solid #f1f5f9;display:flex;gap:6px;align-items:flex-start}
+.log-item:last-child{border:none}
+.log-time{color:#94a3b8;flex-shrink:0;white-space:nowrap}
+.log-text{color:#334155;line-height:1.4}
+
+/* ── Settings drawer ── */
+.settings-drawer{display:none;flex-direction:column;gap:10px;padding:12px;background:#fff;border-bottom:1px solid #e2e8f0;flex-shrink:0}
+.settings-drawer.open{display:flex}
+.field label{font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase}
+.field input{width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 9px;font-size:12px;color:#1e293b;outline:none}
+.field input:focus{border-color:#0D9488}
+.save-row{display:flex;gap:6px}
+#saveMsg{font-size:11px;color:#15803d;align-self:center}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-title">
+    <div class="conn-dot" id="connDot"></div>
+    Sheet Sync
+  </div>
+  <div class="hdr-right">
+    <span id="connLabel">กำลังตรวจสอบ...</span>
+    <button class="gear-btn" id="gearBtn" title="Settings">⚙️</button>
+  </div>
+</div>
+
+<!-- Settings drawer -->
+<div class="settings-drawer" id="settingsDrawer">
+  <div class="field">
+    <label>ลิงก์ Google Sheet</label>
+    <input id="spreadsheetUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/..../edit" />
+  </div>
+  <div class="save-row">
+    <button class="btn btn-primary" id="saveBtn">💾 บันทึกลิงก์</button>
+    <button class="btn" id="connectBtn">🔗 เชื่อมต่อ Google</button>
+    <span id="saveMsg"></span>
+  </div>
+  <div class="save-row">
+    <button class="btn" id="disconnectBtn">ออกจากระบบ Google</button>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" data-tab="shopee">🛍️ Shopee</button>
+  <button class="tab" data-tab="lazada">🏪 Lazada</button>
+  <button class="tab" data-tab="fb">📘 FB กลุ่ม</button>
+  <button class="tab" data-tab="post">📣 โพสต์กลุ่ม</button>
+</div>
+
+<!-- Panel body -->
+<div class="panel-body">
+
+  <!-- ── Shopee ── -->
+  <div class="section active" id="sec-shopee">
+    <div id="shopee-banner" class="status-banner warn">
+      <span class="status-icon">⏳</span>
+      <span id="shopee-banner-text">กำลังโหลด...</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-label">บันทึกแล้ว (session)</div><div class="stat-val accent" id="shopee-synced">0</div></div>
+      <div class="stat-box"><div class="stat-label">เห็นแล้ว (ยังไม่บันทึก)</div><div class="stat-val" id="shopee-pending">0</div></div>
+      <div class="stat-box"><div class="stat-label">สินค้าใน DB</div><div class="stat-val blue" id="shopee-db">-</div></div>
+      <div class="stat-box"><div class="stat-label">มี Short Link</div><div class="stat-val green" id="shopee-links">-</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Short link coverage</span><span id="shopee-pct">-</span></div>
+      <div class="prog-bar"><div class="prog-fill accent" id="shopee-prog" style="width:0%"></div></div>
+    </div>
+    <div id="shopee-tips" class="tips" style="display:none">
+      <div class="tips-title">💡 แนะนำ</div>
+      <div id="shopee-tips-body"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="shopee-flush">🔄 ส่งที่ค้างอีกครั้ง</button>
+      <button class="btn btn-ghost" id="shopee-reset">↺ ล้างที่เก็บไว้</button>
+      <button class="btn btn-ghost" id="shopee-refresh-db">📊 อัพเดท DB stats</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📥 วิธีบันทึกสินค้า</div>
+      <div class="tips" style="display:block;margin-bottom:0">
+        <div class="tip">เปิด affiliate.shopee.co.th แล้วเลื่อนดูสินค้าที่สนใจ (ยังไม่บันทึกอะไร)</div>
+        <div class="tip">ติ๊กเลือกสินค้าที่ต้องการ → กด "รับลิงก์" เพื่อดาวน์โหลดไฟล์ลิงก์</div>
+        <div class="tip">บันทึกเฉพาะตัวที่เลือก พร้อม short link — ตัวที่ไม่ได้เลือกจะถูกทิ้งจากเครื่อง</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">กิจกรรมล่าสุด</div>
+      <div class="log-list" id="shopee-log"><span style="color:#94a3b8;font-size:11px">ยังไม่มีกิจกรรม</span></div>
+    </div>
+  </div>
+
+  <!-- ── Lazada ── -->
+  <div class="section" id="sec-lazada">
+    <div id="lazada-banner" class="status-banner warn">
+      <span class="status-icon">⏳</span>
+      <span id="lazada-banner-text">กำลังโหลด...</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-label">บันทึกแล้ว (session)</div><div class="stat-val accent" id="lazada-synced">0</div></div>
+      <div class="stat-box"><div class="stat-label">เห็นแล้ว (ยังไม่บันทึก)</div><div class="stat-val" id="lazada-pending">0</div></div>
+      <div class="stat-box"><div class="stat-label">สินค้าใน DB</div><div class="stat-val blue" id="lazada-db">-</div></div>
+      <div class="stat-box"><div class="stat-label">มี Tracking Link</div><div class="stat-val green" id="lazada-links">-</div></div>
+    </div>
+    <div id="lazada-tips" class="tips" style="display:none">
+      <div class="tips-title">💡 แนะนำ</div>
+      <div id="lazada-tips-body"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-navy" id="lazada-flush">🔄 ส่งที่ค้างอีกครั้ง</button>
+      <button class="btn btn-ghost" id="lazada-reset">↺ ล้างที่เก็บไว้</button>
+      <button class="btn btn-ghost" id="lazada-refresh-db">📊 อัพเดท DB stats</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📥 วิธีบันทึกสินค้า</div>
+      <div class="tips" style="display:block;margin-bottom:0">
+        <div class="tip">เปิด adsense.lazada.co.th แล้วเลื่อนดูสินค้าที่สนใจ (ยังไม่บันทึกอะไร)</div>
+        <div class="tip">ติ๊กเลือกสินค้าที่ต้องการ → กด "Get Link" / "โปรโมต" เพื่อรับลิงก์</div>
+        <div class="tip">บันทึกเฉพาะตัวที่เลือก — ตัวที่ไม่ได้เลือกจะถูกทิ้งจากเครื่อง</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">กิจกรรมล่าสุด</div>
+      <div class="log-list" id="lazada-log"><span style="color:#94a3b8;font-size:11px">ยังไม่มีกิจกรรม</span></div>
+    </div>
+  </div>
+
+  <!-- ── FB กลุ่ม ── -->
+  <div class="section" id="sec-fb">
+    <div id="fb-banner" class="status-banner warn">
+      <span class="status-icon">⏳</span>
+      <span id="fb-banner-text">กำลังโหลด...</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-label">กลุ่มทั้งหมด</div><div class="stat-val" id="fb-total">-</div></div>
+      <div class="stat-box"><div class="stat-label">มี URL แล้ว</div><div class="stat-val green" id="fb-has-url">-</div></div>
+      <div class="stat-box"><div class="stat-label">Backfill session นี้</div><div class="stat-val accent" id="fb-backfilled">0</div></div>
+      <div class="stat-box"><div class="stat-label">ยังขาด URL</div><div class="stat-val" id="fb-missing" style="color:#ef4444">-</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>URL coverage</span><span id="fb-pct">-</span></div>
+      <div class="prog-bar"><div class="prog-fill green" id="fb-prog" style="width:0%"></div></div>
+    </div>
+    <div id="fb-tips" class="tips" style="display:none">
+      <div class="tips-title">💡 แนะนำ</div>
+      <div id="fb-tips-body"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-green" id="fb-scan">🔍 Scan หน้านี้</button>
+      <button class="btn btn-ghost" id="fb-reset">↺ Reset dedup</button>
+      <button class="btn btn-ghost" id="fb-refresh-db">📊 อัพเดท DB stats</button>
+    </div>
+    <div class="card">
+      <div class="card-title">กิจกรรมล่าสุด</div>
+      <div class="log-list" id="fb-log"><span style="color:#94a3b8;font-size:11px">ยังไม่มีกิจกรรม</span></div>
+    </div>
+  </div>
+
+  <!-- ── Guided posting session ─────────────────────────────────────────── -->
+  <div class="section" id="sec-post">
+    <div id="post-banner" class="status-banner warn">
+      <span class="status-icon">📣</span>
+      <span id="post-banner-text">กดเริ่มเพื่อดึงคิวโพสต์วันนี้</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="post-start">▶️ เริ่มเซสชันวันนี้</button>
+      <button class="btn btn-ghost" id="post-refresh">↺ ดึงคิวใหม่</button>
+    </div>
+
+    <div class="prog-wrap" id="post-prog-wrap" style="display:none">
+      <div class="prog-label"><span>ความคืบหน้า</span><span id="post-count">0/0</span></div>
+      <div class="prog-bar"><div class="prog-fill accent" id="post-prog" style="width:0%"></div></div>
+    </div>
+
+    <div class="card" id="post-card" style="display:none">
+      <div class="card-title" id="post-group">-</div>
+      <div id="post-product" style="font-size:12px;color:#475569;margin-bottom:6px"></div>
+      <img id="post-image" alt="" style="display:none;width:100%;max-height:140px;object-fit:contain;border-radius:6px;margin-bottom:6px" />
+      <div id="post-caption" style="white-space:pre-wrap;font-size:12px;background:#f8fafc;border-radius:6px;padding:8px;color:#334155"></div>
+      <div id="post-linknote" style="font-size:11px;color:#64748b;margin-top:4px"></div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn btn-primary" id="post-copy">📋↗ แคปชั่น + เปิดกลุ่ม</button>
+        <button class="btn btn-navy" id="post-copy-img">🖼️ คัดลอกรูป</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-green" id="post-done">✅ โพสต์แล้ว → ถัดไป</button>
+        <button class="btn btn-ghost" id="post-skip">ข้าม</button>
+      </div>
+    </div>
+
+    <div class="card" id="post-done-msg" style="display:none">
+      <div class="card-title">🎉 จบเซสชันวันนี้</div>
+      <div style="font-size:12px;color:#475569" id="post-done-text"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">กิจกรรมล่าสุด</div>
+      <div class="log-list" id="post-log"><span style="color:#94a3b8;font-size:11px">ยังไม่มีกิจกรรม</span></div>
+    </div>
+  </div>
+
+</div><!-- /panel-body -->
+
+<script src="image-clip.js"></script>
+<script src="sidepanel.js"></script>
+</body>
+</html>

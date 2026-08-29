@@ -1,0 +1,76 @@
+{
+  "manifest_version": 3,
+  "name": "Affiliate Sheet Sync",
+  "version": "1.0.0",
+  "description": "Sync สินค้า Shopee + Lazada + backfill กลุ่ม FB ในที่เดียว",
+
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvzupqwHITPILfxuB15g0PFziKN+E+C4G7JFNzsUALYDpduoPRBEyn3cW9SDtQ99tif+kr/QtcVDualc9eEkg/nPxQsWbFhx3gxWk47Bb2seRjJLnGhG38EWYXTJNC0MhqbH9zBnaw1WtkP+WhXGi1JLdD36pY8iaDPMaLjEUUIlVVeK1xNhFkPtlmA3iog9ijF4/ixxDW7fgF/zsxrIrvifu9YVrx47Hfb2zOJ8PPqcGsMtMRuxRJBSjOjCWE5sMGzvWy004H84xO0DuIYCnXHhU0iz+4TguMmb1ICASXNOb5XA564stoXutd3F9oQhhEnDfceTWnHmUcnl18dsR0QIDAQAB",
+
+  "permissions": ["storage", "tabs", "sidePanel", "identity"],
+
+  "oauth2": {
+    "client_id": "914873668367-fje8hasub3sepli8muevsmlppb79v6hq.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
+  },
+
+  "host_permissions": [
+    "https://affiliate.shopee.co.th/*",
+    "https://shopee.co.th/*",
+    "https://adsense.lazada.co.th/*",
+    "https://*.lazada.co.th/*",
+    "https://www.facebook.com/*",
+    "https://sheets.googleapis.com/*",
+    "https://oauth2.googleapis.com/*",
+    "https://cf.shopee.co.th/*",
+    "https://*.susercontent.com/*",
+    "https://*.slatic.net/*",
+    "https://*.lazcdn.com/*"
+  ],
+
+  "background": { "service_worker": "background.js", "type": "module" },
+
+  "side_panel": { "default_path": "sidepanel.html" },
+
+  "action": {
+    "default_title": "Affiliate Sheet Sync"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://affiliate.shopee.co.th/*"],
+      "js": ["interceptor-shopee.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://affiliate.shopee.co.th/*"],
+      "js": ["content-shopee.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    },
+    {
+      "matches": ["https://adsense.lazada.co.th/*"],
+      "js": ["interceptor-lazada.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://adsense.lazada.co.th/*"],
+      "js": ["content-lazada.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    },
+    {
+      "matches": ["https://www.facebook.com/groups/*"],
+      "js": ["content-fb.js"],
+      "run_at": "document_idle",
+      "world": "ISOLATED"
+    }
+  ],
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
