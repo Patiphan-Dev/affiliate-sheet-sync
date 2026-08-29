@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Noto_Sans_Thai } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
@@ -28,6 +28,15 @@ export const metadata: Metadata = {
     url: SITE.url,
   },
   robots: { index: true, follow: true },
+  appleWebApp: { capable: true, title: SITE.name, statusBarStyle: 'default' },
+  manifest: '/manifest.webmanifest',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#ee4d2d',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

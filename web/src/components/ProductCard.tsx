@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Product } from '@/types';
 import { platformLabel, soldText } from '@/lib/format';
+import { IconTent } from './icons';
 
 const AFF_REL = 'sponsored nofollow noopener';
 
@@ -12,7 +13,7 @@ const AFF_REL = 'sponsored nofollow noopener';
  */
 export function ProductCard({ product: p }: { product: Product }) {
   return (
-    <article className="flex flex-col overflow-hidden border border-hairline bg-white shadow-card transition hover:border-brand hover:shadow-cardhover">
+    <article className="flex flex-col overflow-hidden rounded-lg border border-hairline bg-white shadow-card transition duration-150 hover:-translate-y-0.5 hover:border-brand hover:shadow-cardhover">
       <a href={p.link} target="_blank" rel={AFF_REL} className="group flex flex-1 flex-col">
         <div className="relative aspect-square bg-page">
           {p.image ? (
@@ -21,16 +22,18 @@ export function ProductCard({ product: p }: { product: Product }) {
               alt={p.name}
               fill
               sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 16vw"
-              className="object-cover"
+              className="object-cover transition duration-200 group-hover:scale-[1.04]"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-3xl text-hairline">⛺</div>
+            <div className="flex h-full items-center justify-center text-hairline">
+              <IconTent width={40} height={40} />
+            </div>
           )}
-          <span className="absolute left-0 top-0 bg-brand/90 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+          <span className="absolute left-1.5 top-1.5 rounded bg-black/55 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
             {platformLabel(p.platform)}
           </span>
           {p.discountPercent > 0 && (
-            <span className="absolute right-0 top-0 bg-gold px-1.5 py-1 text-center text-[11px] font-bold leading-none text-white">
+            <span className="absolute right-0 top-2 rounded-l bg-gold px-2 py-1 text-center text-[11px] font-bold leading-none text-white shadow-sm">
               -{p.discountPercent}%
             </span>
           )}
@@ -40,10 +43,10 @@ export function ProductCard({ product: p }: { product: Product }) {
           {(p.hot || p.isNew) && (
             <div className="flex gap-1">
               {p.hot && (
-                <span className="bg-gold/10 px-1 text-[10px] font-semibold text-gold">🔥 ขายดี</span>
+                <span className="rounded bg-gold/10 px-1.5 py-0.5 text-[10px] font-semibold text-gold">ขายดี</span>
               )}
               {p.isNew && (
-                <span className="bg-brand/10 px-1 text-[10px] font-semibold text-brand">ใหม่</span>
+                <span className="rounded bg-brand/10 px-1.5 py-0.5 text-[10px] font-semibold text-brand">ใหม่</span>
               )}
             </div>
           )}
@@ -75,13 +78,13 @@ export function ProductCard({ product: p }: { product: Product }) {
           href={p.link}
           target="_blank"
           rel={AFF_REL}
-          className="flex-1 bg-brand px-2 py-1.5 text-center text-xs font-semibold text-white hover:bg-brand-dark"
+          className="flex-1 rounded-md bg-brand px-2 py-1.5 text-center text-xs font-semibold text-white transition hover:bg-brand-dark"
         >
           ดูสินค้า
         </a>
         <Link
           href={`/gear/${p.slug}`}
-          className="border border-hairline px-2 py-1.5 text-center text-xs text-subtle hover:border-brand hover:text-brand"
+          className="rounded-md border border-hairline px-2 py-1.5 text-center text-xs text-subtle transition hover:border-brand hover:text-brand"
         >
           รีวิว
         </Link>
