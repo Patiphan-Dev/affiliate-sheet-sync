@@ -60,7 +60,7 @@ export default async function GearPage({ params }: { params: Promise<{ slug: str
       <Breadcrumbs trail={trail} />
 
       <div className="grid gap-6 md:grid-cols-[320px_1fr]">
-        <div className="relative aspect-square overflow-hidden rounded-xl border border-hairline bg-white">
+        <div className="relative aspect-square overflow-hidden rounded-xl border border-hairline bg-surface">
           {p.image && <Image src={p.image} alt={p.name} fill sizes="320px" className="object-contain" priority />}
         </div>
         <div>

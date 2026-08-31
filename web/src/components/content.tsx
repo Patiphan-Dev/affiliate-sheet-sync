@@ -4,7 +4,7 @@ import { baht } from '@/lib/format';
 /** Short answer-first box — the bit AI answer engines tend to lift and cite. */
 export function Tldr({ children }: { children: React.ReactNode }) {
   return (
-    <aside className="rounded-xl border-l-4 border-brand bg-white p-4 text-sm leading-relaxed text-ink/85">
+    <aside className="rounded-xl border-l-4 border-brand bg-surface p-4 text-sm leading-relaxed text-ink/85">
       <span className="mr-2 text-brand">สรุปสั้น</span>
       {children}
     </aside>

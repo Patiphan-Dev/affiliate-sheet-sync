@@ -23,7 +23,7 @@ export default async function HomePage() {
 
       <HomeHero />
 
-      <section className="rounded-xl bg-white p-4 shadow-card">
+      <section className="rounded-xl bg-surface p-4 shadow-card">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-subtle">หมวดหมู่</h2>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
           {CATEGORIES.map((c) => {
@@ -44,7 +44,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-white p-4 shadow-card">
+      <section className="rounded-xl bg-surface p-4 shadow-card">
         <div className="section-title flex items-center justify-between">
           <span>สินค้าแนะนำประจำวัน</span>
           <span className="text-xs font-normal normal-case text-subtle">{products.length} รายการ</span>
@@ -55,7 +55,7 @@ export default async function HomePage() {
       </section>
 
       {guides.length > 0 && (
-        <section className="rounded-xl bg-white p-4 shadow-card">
+        <section className="rounded-xl bg-surface p-4 shadow-card">
           <div className="section-title">คู่มือเลือกซื้อ</div>
           <ul className="mt-3 grid gap-3 sm:grid-cols-2">
             {guides.map((g) => (

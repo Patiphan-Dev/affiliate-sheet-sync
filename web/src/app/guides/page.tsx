@@ -26,7 +26,7 @@ export default async function GuidesIndex() {
       {guides.length ? (
         <ul className="grid gap-4 sm:grid-cols-2">
           {guides.map((g) => (
-            <li key={g.slug} className="rounded-xl border border-hairline bg-white p-5">
+            <li key={g.slug} className="rounded-xl border border-hairline bg-surface p-5">
               <Link href={`/guides/${g.slug}`} className="text-lg text-ink hover:text-brand">
                 {g.title}
               </Link>

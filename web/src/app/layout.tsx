@@ -33,15 +33,24 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ee4d2d',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ee4d2d' },
+    { media: '(prefers-color-scheme: dark)', color: '#0d1110' },
+  ],
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
 };
 
+// Set the theme class before first paint so there is no light→dark flash.
+const noFlash = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={body.variable}>
+    <html lang="th" className={body.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: noFlash }} />
+      </head>
       <body>
         <JsonLd data={websiteLd()} />
         <SiteHeader />

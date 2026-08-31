@@ -20,7 +20,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <div className="space-y-4">
       <Breadcrumbs trail={[{ name: 'หน้าแรก', path: '/' }, { name: `ค้นหา: ${q || 'ทั้งหมด'}`, path: '/search' }]} />
-      <div className="bg-white p-3">
+      <div className="bg-surface p-3">
         <h1 className="text-lg font-semibold text-ink">
           ผลการค้นหา{q ? ` “${q}”` : ''} <span className="text-sm font-normal text-subtle">({results.length})</span>
         </h1>

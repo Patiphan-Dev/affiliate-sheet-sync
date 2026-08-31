@@ -43,11 +43,11 @@ export function ProductExplorer({
   }, [products, q, platform, cat, sort]);
 
   const inputCls =
-    'rounded-sm border border-hairline bg-white px-3 py-2 text-sm outline-none focus:border-brand';
+    'rounded-sm border border-hairline bg-surface px-3 py-2 text-sm outline-none focus:border-brand';
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 border border-hairline bg-white p-2">
+      <div className="flex flex-wrap gap-2 border border-hairline bg-surface p-2">
         <input
           type="search"
           value={q}

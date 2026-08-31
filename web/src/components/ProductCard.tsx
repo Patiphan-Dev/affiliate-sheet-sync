@@ -13,7 +13,7 @@ const AFF_REL = 'sponsored nofollow noopener';
  */
 export function ProductCard({ product: p }: { product: Product }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-hairline bg-white shadow-card transition duration-150 hover:-translate-y-0.5 hover:border-brand hover:shadow-cardhover">
+    <article className="flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface shadow-card transition duration-150 hover:-translate-y-0.5 hover:border-brand hover:shadow-cardhover">
       <a href={p.link} target="_blank" rel={AFF_REL} className="group flex flex-1 flex-col">
         <div className="relative aspect-square bg-page">
           {p.image ? (

@@ -90,7 +90,7 @@ export function HomeHero() {
       </div>
 
       {/* shortcut row */}
-      <nav className="flex gap-1 overflow-x-auto rounded-xl bg-white p-3 shadow-card">
+      <nav className="flex gap-1 overflow-x-auto rounded-xl bg-surface p-3 shadow-card">
         {SHORTCUTS.map((s) => {
           const Icon = 'icon' in s ? s.icon : CATEGORY_ICON[s.key];
           return (

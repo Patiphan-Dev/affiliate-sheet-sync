@@ -22,7 +22,7 @@ export default async function DealsPage() {
   return (
     <div className="space-y-4">
       <Breadcrumbs trail={[{ name: 'หน้าแรก', path: '/' }, { name: 'ดีลลดราคา', path: '/deals' }]} />
-      <div className="bg-white p-3">
+      <div className="bg-surface p-3">
         <div className="section-title">ดีลลดราคา &amp; สินค้าขายดี</div>
         <p className="mt-2 text-sm text-subtle">
           {list.length} รายการ — เรียงตามส่วนลดมากที่สุด กดการ์ดเพื่อไปหน้าสินค้าที่ร้านได้เลย

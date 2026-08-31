@@ -4,16 +4,34 @@
 
 @layer base {
   :root {
+    /* light — warm marketplace */
+    --bg-page: 245 245 245;
+    --bg-surface: 255 255 255;
+    --ink: 34 34 34;
+    --subtle: 117 117 117;
+    --hairline: 229 229 229;
+    --price: 238 77 45;
     color-scheme: light;
   }
+
+  :root.dark {
+    /* dark — forest night at camp */
+    --bg-page: 13 17 16;
+    --bg-surface: 22 28 27;
+    --ink: 233 231 224;
+    --subtle: 150 156 150;
+    --hairline: 42 50 47;
+    --price: 255 138 92;
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-page text-ink font-sans antialiased;
   }
 }
 
 @layer components {
-  /* Shopee-style orange section heading with a rule under it */
   .section-title {
-    @apply text-base font-medium uppercase tracking-wide text-brand border-b-2 border-brand/80 pb-2;
+    @apply border-b-2 border-brand/80 pb-2 text-base font-semibold uppercase tracking-wide text-brand;
   }
 }

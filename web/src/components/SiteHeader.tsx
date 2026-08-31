@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/categories';
 import { SITE } from '@/lib/site';
+import { ThemeToggle } from './ThemeToggle';
 
 /** Shopee-style orange header: brand + search + a quick category row. */
 export function SiteHeader() {
@@ -15,7 +16,7 @@ export function SiteHeader() {
             <input
               name="q"
               placeholder="ค้นหาอุปกรณ์แคมป์ปิ้ง เต็นท์ ถุงนอน เตา…"
-              className="min-w-0 flex-1 px-2 py-1.5 text-sm text-ink outline-none"
+              className="min-w-0 flex-1 bg-transparent px-2 py-1.5 text-sm text-[#222] outline-none"
             />
             <button type="submit" className="rounded-sm bg-brand px-4 py-1.5 text-white" aria-label="ค้นหา">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -24,6 +25,7 @@ export function SiteHeader() {
               </svg>
             </button>
           </form>
+          <ThemeToggle />
         </div>
         <nav className="flex gap-4 overflow-x-auto pb-2 text-xs text-white/90">
           <Link href="/deals" className="whitespace-nowrap font-semibold hover:text-white/70">
