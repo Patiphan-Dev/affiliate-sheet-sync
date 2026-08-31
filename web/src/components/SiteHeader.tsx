@@ -9,7 +9,12 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 bg-gradient-to-b from-brand-deep to-brand text-white">
       <div className="mx-auto max-w-content px-3 sm:px-4">
         <div className="flex items-center gap-3 py-2.5">
-          <Link href="/" className="shrink-0 text-2xl font-bold tracking-tight">
+          <Link href="/" className="flex shrink-0 items-center gap-1.5 text-2xl font-bold tracking-tight">
+            <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden className="text-white">
+              <path d="M32 12 8 52h48L32 12Z" fill="none" stroke="currentColor" strokeWidth="6" strokeLinejoin="round" />
+              <path d="M32 12v40" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+              <path d="m22 52 10-17 10 17Z" fill="currentColor" />
+            </svg>
             {SITE.name}
           </Link>
           <form action="/search" className="flex flex-1 items-center rounded-sm bg-white p-1">
