@@ -8,8 +8,25 @@ export function normalizeSlug(s: string): string {
   return decodeURIComponent(String(s ?? '')).normalize('NFC');
 }
 
+// Cap slugs well under the filesystem's 255-byte filename limit: Thai codepoints
+// are 3 bytes in UTF-8, and Vercel writes files like
+// `<slug>.prerender-fallback.html`, so a long Thai name blew ENAMETOOLONG.
+const MAX_SLUG_BYTES = 90;
+
+function truncateBytes(s: string, maxBytes: number): string {
+  let bytes = 0;
+  let out = '';
+  for (const ch of s) {
+    const n = new TextEncoder().encode(ch).length;
+    if (bytes + n > maxBytes) break;
+    bytes += n;
+    out += ch;
+  }
+  return out.replace(/-+$/, '');
+}
+
 export function slugify(text: string, id?: string): string {
-  const base = String(text || '')
+  const cleaned = String(text || '')
     .normalize('NFC')
     .trim()
     .toLowerCase()
@@ -17,8 +34,8 @@ export function slugify(text: string, id?: string): string {
     .replace(/[^฀-๿a-z0-9\s]+/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 80);
+    .replace(/^-|-$/g, '');
   const suffix = id ? `-${String(id).slice(-6)}` : '';
+  const base = truncateBytes(cleaned, MAX_SLUG_BYTES - suffix.length);
   return (base || 'item') + suffix;
 }
