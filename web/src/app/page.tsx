@@ -1,9 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getProducts, getGuides } from '@/lib/data';
 import { CATEGORIES } from '@/lib/categories';
 import { ProductExplorer } from '@/components/ProductExplorer';
 import { HomeHero } from '@/components/HomeHero';
-import { CATEGORY_ICON } from '@/components/icons';
 import { JsonLd } from '@/components/JsonLd';
 import { itemListLd } from '@/lib/schema';
 import { SITE } from '@/lib/site';
@@ -26,21 +26,18 @@ export default async function HomePage() {
       <section className="rounded-xl bg-surface p-4 shadow-card">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-subtle">หมวดหมู่</h2>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
-          {CATEGORIES.map((c) => {
-            const Icon = CATEGORY_ICON[c.slug];
-            return (
-              <Link
-                key={c.slug}
-                href={`/category/${c.slug}`}
-                className="group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition hover:bg-page"
-              >
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-page text-ink transition group-hover:bg-brand group-hover:text-white">
-                  {Icon ? <Icon /> : null}
-                </span>
-                <span className="text-[11px] leading-tight text-ink">{c.name}</span>
-              </Link>
-            );
-          })}
+          {CATEGORIES.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/category/${c.slug}`}
+              className="group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition hover:bg-page"
+            >
+              <span className="relative h-14 w-14 overflow-hidden rounded-full ring-1 ring-hairline transition group-hover:ring-2 group-hover:ring-brand">
+                <Image src={`/cat/${c.slug}.jpg`} alt={c.name} fill sizes="56px" className="object-cover" />
+              </span>
+              <span className="text-[11px] leading-tight text-ink">{c.name}</span>
+            </Link>
+          ))}
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getProducts } from '@/lib/data';
 import { CATEGORIES, getCategory, productsInCategory } from '@/lib/categories';
@@ -41,9 +42,20 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <div className="space-y-6">
       <Breadcrumbs trail={trail} />
-      <header>
-        <h1 className="text-3xl text-brand">{cat.name}</h1>
-        <p className="mt-2 max-w-2xl text-ink/75">{cat.intro}</p>
+      <header className="relative overflow-hidden rounded-xl">
+        <Image
+          src={`/cat/${cat.slug}.jpg`}
+          alt=""
+          fill
+          priority
+          sizes="(max-width:768px) 100vw, 1200px"
+          className="-z-10 object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/80 via-ink/55 to-ink/20" />
+        <div className="p-6 text-white sm:p-8">
+          <h1 className="text-3xl font-bold">{cat.name}</h1>
+          <p className="mt-2 max-w-2xl text-sm text-white/90">{cat.intro}</p>
+        </div>
       </header>
 
       {products.length ? (

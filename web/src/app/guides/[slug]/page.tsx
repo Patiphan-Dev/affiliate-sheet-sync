@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getGuides, getGuideBySlug, getProducts } from '@/lib/data';
 import { getCategory, productsInCategory } from '@/lib/categories';
+import { guideImage } from '@/lib/guide-images';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { FaqList } from '@/components/FaqList';
 import { ProductCard } from '@/components/ProductCard';
@@ -21,11 +23,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const g = await getGuideBySlug(slug);
   if (!g) return {};
+  const img = guideImage(g.slug);
   return {
     title: g.title,
     description: g.summary.slice(0, 160),
     alternates: { canonical: `/guides/${g.slug}` },
-    openGraph: { title: g.title, description: g.summary.slice(0, 200), url: `${SITE.url}/guides/${g.slug}`, type: 'article' },
+    openGraph: {
+      title: g.title,
+      description: g.summary.slice(0, 200),
+      url: `${SITE.url}/guides/${g.slug}`,
+      type: 'article',
+      images: img ? [img] : undefined,
+    },
   };
 }
 
@@ -36,6 +45,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
   const cat = getCategory(g.refId);
   const picks = cat ? productsInCategory(await getProducts(), cat.slug).slice(0, 6) : [];
+  const heroImg = guideImage(g.slug);
 
   const trail = [
     { name: 'หน้าแรก', path: '/' },
@@ -46,6 +56,18 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   return (
     <article className="space-y-6">
       <Breadcrumbs trail={trail} />
+      {heroImg && (
+        <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
+          <Image
+            src={heroImg}
+            alt={g.title}
+            fill
+            priority
+            sizes="(max-width:768px) 100vw, 900px"
+            className="object-cover"
+          />
+        </div>
+      )}
       <header>
         <h1 className="text-3xl text-brand">{g.title}</h1>
         {g.updatedAt && <p className="mt-2 text-xs text-ink/45">อัปเดตล่าสุด {thaiDate(g.updatedAt)}</p>}

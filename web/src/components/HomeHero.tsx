@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { IconTag, IconBook } from './icons';
-import { CATEGORY_ICON } from './icons';
+import Image from 'next/image';
+import { IconTag, IconBook, CATEGORY_ICON } from './icons';
 
 /** Faint topographic contour lines — instant "outdoors" texture, zero assets. */
 function Contour({ className = '' }: { className?: string }) {
@@ -17,14 +17,6 @@ function Contour({ className = '' }: { className?: string }) {
         <path d="M-20 135 C 80 95, 140 175, 220 132 S 380 85, 440 132" />
         <path d="M-20 178 C 90 140, 150 210, 235 172 S 390 128, 440 172" />
       </g>
-    </svg>
-  );
-}
-
-function TentMark() {
-  return (
-    <svg aria-hidden className="absolute -right-4 -bottom-6 h-40 w-40 text-white/15" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 3 2 21h20L12 3Zm0 6 4.5 9h-9L12 9Z" />
     </svg>
   );
 }
@@ -46,10 +38,18 @@ export function HomeHero() {
         {/* main */}
         <Link
           href="/deals"
-          className="relative isolate flex min-h-[210px] flex-col justify-end overflow-hidden rounded-xl bg-gradient-to-br from-brand-deep via-brand to-[#ff7a45] p-6 text-white sm:min-h-[260px]"
+          className="relative isolate flex min-h-[210px] flex-col justify-end overflow-hidden rounded-xl p-6 text-white sm:min-h-[260px]"
         >
-          <Contour className="text-white" />
-          <TentMark />
+          <Image
+            src="/hero.jpg"
+            alt=""
+            fill
+            priority
+            sizes="(max-width:768px) 100vw, 760px"
+            className="-z-10 object-cover"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-t from-brand-deep/95 via-brand/70 to-brand/25" />
+          <Contour className="text-white/70" />
           <div className="relative">
             <p className="text-xs font-semibold uppercase tracking-widest text-white/75">คัดมาให้แล้ว</p>
             <h2 className="mt-1 max-w-md text-2xl font-bold leading-tight sm:text-[28px]">
