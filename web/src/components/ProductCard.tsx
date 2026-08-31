@@ -7,88 +7,61 @@ import { IconTent } from './icons';
 const AFF_REL = 'sponsored nofollow noopener';
 
 /**
- * Marketplace card. The image / name / price and the primary button all point
- * straight at the affiliate link (opens the platform product page → we earn the
- * commission). A small secondary link goes to our own review page for SEO.
+ * Editorial product card. The image + name + price link straight to the
+ * affiliate URL (we earn the commission); a small "รีวิว" link goes to our own
+ * page for internal linking / SEO.
  */
 export function ProductCard({ product: p }: { product: Product }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-hairline bg-surface shadow-card transition duration-150 hover:-translate-y-0.5 hover:border-brand hover:shadow-cardhover">
-      <a href={p.link} target="_blank" rel={AFF_REL} className="group flex flex-1 flex-col">
-        <div className="relative aspect-square bg-page">
+    <article className="group">
+      <a href={p.link} target="_blank" rel={AFF_REL} className="block">
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-surface">
           {p.image ? (
             <Image
               src={p.image}
               alt={p.name}
               fill
-              sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 16vw"
-              className="object-cover transition duration-200 group-hover:scale-[1.04]"
+              sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 300px"
+              className="object-cover transition duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-hairline">
-              <IconTent width={40} height={40} />
+              <IconTent width={44} height={44} />
             </div>
           )}
-          <span className="absolute left-1.5 top-1.5 rounded bg-black/55 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
-            {platformLabel(p.platform)}
-          </span>
           {p.discountPercent > 0 && (
-            <span className="absolute right-0 top-2 rounded-l bg-gold px-2 py-1 text-center text-[11px] font-bold leading-none text-white shadow-sm">
+            <span className="absolute left-2 top-2 bg-sale px-1.5 py-0.5 text-[11px] font-bold leading-none text-white">
               -{p.discountPercent}%
             </span>
           )}
         </div>
 
-        <div className="flex flex-1 flex-col gap-1 p-2">
-          {(p.hot || p.isNew) && (
-            <div className="flex gap-1">
-              {p.hot && (
-                <span className="rounded bg-gold/10 px-1.5 py-0.5 text-[10px] font-semibold text-gold">ขายดี</span>
-              )}
-              {p.isNew && (
-                <span className="rounded bg-brand/10 px-1.5 py-0.5 text-[10px] font-semibold text-brand">ใหม่</span>
-              )}
-            </div>
-          )}
-          <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-tight text-ink group-hover:text-brand">
-            {p.name}
-          </p>
-          <div className="mt-auto flex items-baseline gap-1.5">
-            <span className="text-price">
-              <span className="text-xs">฿</span>
-              <span className="text-lg font-medium">
-                {p.price != null ? p.price.toLocaleString('th-TH') : '—'}
-              </span>
+        <div className="mt-2.5">
+          <p className="text-[11px] uppercase tracking-wide text-subtle">{platformLabel(p.platform)}</p>
+          <p className="mt-0.5 line-clamp-2 min-h-[2.5em] text-sm leading-snug">{p.name}</p>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span className="font-bold text-price">
+              ฿{p.price != null ? p.price.toLocaleString('th-TH') : '—'}
             </span>
             {p.originalPrice != null && (
-              <span className="text-xs text-subtle line-through">
-                ฿{p.originalPrice.toLocaleString('th-TH')}
-              </span>
+              <span className="text-xs text-subtle line-through">฿{p.originalPrice.toLocaleString('th-TH')}</span>
             )}
           </div>
-          <div className="flex items-center gap-2 text-[11px] text-subtle">
-            {p.rating != null && <span>⭐ {p.rating.toFixed(1)}</span>}
-            {soldText(p.sold) && <span>ขายแล้ว {soldText(p.sold)}</span>}
-          </div>
+          {(p.rating != null || soldText(p.sold)) && (
+            <p className="mt-0.5 text-[11px] text-subtle">
+              {p.rating != null && <span>★ {p.rating.toFixed(1)}</span>}
+              {p.rating != null && soldText(p.sold) && ' · '}
+              {soldText(p.sold) && <span>ขายแล้ว {soldText(p.sold)}</span>}
+            </p>
+          )}
         </div>
       </a>
-
-      <div className="flex gap-1 p-2 pt-0">
-        <a
-          href={p.link}
-          target="_blank"
-          rel={AFF_REL}
-          className="flex-1 rounded-md bg-brand px-2 py-1.5 text-center text-xs font-semibold text-white transition hover:bg-brand-dark"
-        >
-          ดูสินค้า
-        </a>
-        <Link
-          href={`/gear/${p.slug}`}
-          className="rounded-md border border-hairline px-2 py-1.5 text-center text-xs text-subtle transition hover:border-brand hover:text-brand"
-        >
-          รีวิว
-        </Link>
-      </div>
+      <Link
+        href={`/gear/${p.slug}`}
+        className="mt-1.5 inline-block border-b border-current pb-px text-[11px] font-semibold uppercase tracking-wide text-subtle transition hover:text-ink"
+      >
+        อ่านรีวิว
+      </Link>
     </article>
   );
 }

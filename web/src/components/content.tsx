@@ -4,8 +4,8 @@ import { baht } from '@/lib/format';
 /** Short answer-first box — the bit AI answer engines tend to lift and cite. */
 export function Tldr({ children }: { children: React.ReactNode }) {
   return (
-    <aside className="rounded-xl border-l-4 border-brand bg-surface p-4 text-sm leading-relaxed text-ink/85">
-      <span className="mr-2 text-brand">สรุปสั้น</span>
+    <aside className="border-l-2 border-ink bg-surface p-4 text-sm leading-relaxed text-ink/85">
+      <span className="mr-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-subtle">สรุปสั้น</span>
       {children}
     </aside>
   );
@@ -23,7 +23,7 @@ export function AffiliateNote() {
 export function ArticleBody({ html }: { html: string }) {
   return (
     <div
-      className="mt-6 space-y-4 text-[15px] leading-relaxed text-ink/85 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-brand [&_h3]:mt-6 [&_h3]:font-medium [&_ul]:list-disc [&_ul]:pl-5 [&_a]:text-brand [&_a]:underline"
+      className="mt-6 space-y-4 text-[15px] leading-relaxed text-ink/85 [&_h2]:mt-9 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-ink [&_h3]:mt-6 [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-5 [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-2"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -53,7 +53,7 @@ export function ComparisonTable({ products }: { products: Product[] }) {
                   href={p.link}
                   target="_blank"
                   rel="nofollow noopener sponsored"
-                  className="text-brand underline whitespace-nowrap"
+                  className="whitespace-nowrap font-semibold underline underline-offset-2"
                 >
                   ดูราคา →
                 </a>

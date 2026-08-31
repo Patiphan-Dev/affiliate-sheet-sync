@@ -69,7 +69,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         </div>
       )}
       <header>
-        <h1 className="text-3xl text-brand">{g.title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{g.title}</h1>
         {g.updatedAt && <p className="mt-2 text-xs text-ink/45">อัปเดตล่าสุด {thaiDate(g.updatedAt)}</p>}
       </header>
 
@@ -80,7 +80,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
       {picks.length >= 2 && (
         <section>
-          <h2 className="text-xl text-brand">ตารางเทียบรุ่นแนะนำ</h2>
+          <h2 className="text-xl font-bold tracking-tight">ตารางเทียบรุ่นแนะนำ</h2>
           <ComparisonTable products={picks} />
         </section>
       )}
@@ -89,7 +89,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
       {picks.length > 0 && (
         <section>
-          <h2 className="text-xl text-brand">สินค้าที่กล่าวถึงในบทความ</h2>
+          <h2 className="text-xl font-bold tracking-tight">สินค้าที่กล่าวถึงในบทความ</h2>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
             {picks.slice(0, 6).map((p) => (
               <ProductCard key={p.slug} product={p} />

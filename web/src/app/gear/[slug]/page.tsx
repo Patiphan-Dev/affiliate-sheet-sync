@@ -64,7 +64,7 @@ export default async function GearPage({ params }: { params: Promise<{ slug: str
           {p.image && <Image src={p.image} alt={p.name} fill sizes="320px" className="object-contain" priority />}
         </div>
         <div>
-          <h1 className="text-2xl text-brand sm:text-3xl">{p.name}</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{p.name}</h1>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <span className="text-2xl text-ink">{baht(p.price)}</span>
             <span className="rounded bg-ink/5 px-2 py-1 text-xs text-ink/70">{platformLabel(p.platform)}</span>
@@ -74,7 +74,7 @@ export default async function GearPage({ params }: { params: Promise<{ slug: str
             href={p.link}
             target="_blank"
             rel="nofollow noopener sponsored"
-            className="mt-4 inline-block rounded-lg bg-brand px-5 py-3 font-semibold text-white hover:opacity-90"
+            className="mt-4 inline-block bg-ink px-6 py-3.5 text-sm font-semibold uppercase tracking-wide text-page hover:opacity-85"
           >
             ดูราคาล่าสุดที่ {platformLabel(p.platform)} →
           </a>
@@ -89,14 +89,14 @@ export default async function GearPage({ params }: { params: Promise<{ slug: str
 
       {review?.bodyHtml && (
         <section>
-          <h2 className="text-xl text-brand">รีวิว {p.name}</h2>
+          <h2 className="text-xl font-bold tracking-tight">รีวิว {p.name}</h2>
           <ArticleBody html={review.bodyHtml} />
         </section>
       )}
 
       {related.length >= 2 && (
         <section>
-          <h2 className="text-xl text-brand">รุ่นใกล้เคียงในหมวด{cat?.name}</h2>
+          <h2 className="text-xl font-bold tracking-tight">รุ่นใกล้เคียงในหมวด{cat?.name}</h2>
           <ComparisonTable products={[p, ...related.slice(0, 4)]} />
         </section>
       )}
@@ -105,14 +105,14 @@ export default async function GearPage({ params }: { params: Promise<{ slug: str
 
       {related.length > 0 && (
         <section>
-          <h2 className="text-xl text-brand">ดูสินค้าอื่นในหมวดนี้</h2>
+          <h2 className="text-xl font-bold tracking-tight">ดูสินค้าอื่นในหมวดนี้</h2>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {related.slice(0, 4).map((x) => (
               <ProductCard key={x.slug} product={x} />
             ))}
           </div>
           {cat && (
-            <Link href={`/category/${cat.slug}`} className="mt-4 inline-block text-sm text-brand underline">
+            <Link href={`/category/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold underline underline-offset-2">
               ดู{cat.name}ทั้งหมด →
             </Link>
           )}

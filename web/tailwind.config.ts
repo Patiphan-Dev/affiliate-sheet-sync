@@ -12,6 +12,7 @@ const config: Config = {
         // fixed across themes — the campfire orange
         brand: { DEFAULT: '#ee4d2d', dark: '#d73211', deep: '#f53d2d' },
         price: 'rgb(var(--price) / <alpha-value>)',
+        sale: 'rgb(var(--sale) / <alpha-value>)',
         gold: '#d0011b',
         // themeable
         page: v('--bg-page'),

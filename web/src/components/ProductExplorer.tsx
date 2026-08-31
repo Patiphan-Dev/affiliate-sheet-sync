@@ -42,21 +42,21 @@ export function ProductExplorer({
     return list;
   }, [products, q, platform, cat, sort]);
 
-  const inputCls =
-    'rounded-sm border border-hairline bg-surface px-3 py-2 text-sm outline-none focus:border-brand';
+  const selectCls =
+    'border-0 border-b border-hairline bg-transparent py-1 pr-6 text-sm font-medium outline-none focus:border-ink';
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 border border-hairline bg-surface p-2">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-hairline pb-4">
         <input
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="ค้นหาในรายการนี้…"
-          className={`min-w-[180px] flex-1 ${inputCls}`}
+          className="min-w-[160px] flex-1 border-b border-hairline bg-transparent py-1 text-sm outline-none placeholder:text-subtle focus:border-ink"
         />
         {showCategoryFilter && (
-          <select value={cat} onChange={(e) => setCat(e.target.value)} className={inputCls}>
+          <select value={cat} onChange={(e) => setCat(e.target.value)} className={selectCls} aria-label="หมวด">
             <option value="">ทุกหมวด</option>
             {categories.map((c) => (
               <option key={c.slug} value={c.slug}>
@@ -65,30 +65,29 @@ export function ProductExplorer({
             ))}
           </select>
         )}
-        <select value={platform} onChange={(e) => setPlatform(e.target.value)} className={inputCls}>
+        <select value={platform} onChange={(e) => setPlatform(e.target.value)} className={selectCls} aria-label="แพลตฟอร์ม">
           <option value="">ทุกแพลตฟอร์ม</option>
           <option value="shopee">Shopee</option>
           <option value="lazada">Lazada</option>
         </select>
-        <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className={inputCls}>
+        <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className={selectCls} aria-label="เรียงตาม">
           <option value="new">ใหม่ล่าสุด</option>
           <option value="reco">แนะนำ</option>
           <option value="discount">ลดราคาเยอะ</option>
           <option value="cheap">ราคาถูก → แพง</option>
           <option value="pricey">ราคาแพง → ถูก</option>
         </select>
+        <span className="text-xs text-subtle">{view.length} รายการ</span>
       </div>
 
-      <p className="mt-2 text-xs text-subtle">{view.length} รายการ</p>
-
       {view.length ? (
-        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
           {view.map((p) => (
             <ProductCard key={`${p.platform}-${p.id}`} product={p} />
           ))}
         </div>
       ) : (
-        <p className="mt-10 text-center text-sm text-subtle">ไม่พบสินค้าตามเงื่อนไข</p>
+        <p className="mt-12 text-center text-sm text-subtle">ไม่พบสินค้าตามเงื่อนไข</p>
       )}
     </div>
   );

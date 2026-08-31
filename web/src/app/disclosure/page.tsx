@@ -12,7 +12,7 @@ export default function DisclosurePage() {
   return (
     <div className="max-w-2xl space-y-4">
       <Breadcrumbs trail={[{ name: 'หน้าแรก', path: '/' }, { name: 'การเปิดเผยลิงก์แนะนำ', path: '/disclosure' }]} />
-      <h1 className="text-3xl text-brand">การเปิดเผยลิงก์แนะนำสินค้า</h1>
+      <h1 className="text-3xl font-bold tracking-tight">การเปิดเผยลิงก์แนะนำสินค้า</h1>
       <p className="text-ink/80">
         {SITE.name} เข้าร่วมโครงการพันธมิตร (affiliate) ของ Shopee และ Lazada เมื่อคุณกดลิงก์สินค้าบนเว็บนี้แล้วทำการซื้อ
         เราอาจได้รับค่าคอมมิชชั่นจากแพลตฟอร์ม <strong>โดยที่คุณไม่ต้องจ่ายเพิ่มแม้แต่บาทเดียว</strong>

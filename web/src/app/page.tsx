@@ -3,10 +3,10 @@ import Image from 'next/image';
 import { getProducts, getGuides } from '@/lib/data';
 import { CATEGORIES } from '@/lib/categories';
 import { ProductExplorer } from '@/components/ProductExplorer';
-import { HomeHero } from '@/components/HomeHero';
+import { HomeHero, CategoryTiles } from '@/components/HomeHero';
+import { guideImage } from '@/lib/guide-images';
 import { JsonLd } from '@/components/JsonLd';
 import { itemListLd } from '@/lib/schema';
-import { SITE } from '@/lib/site';
 import { thaiDate } from '@/lib/format';
 
 export const revalidate = 3600;
@@ -16,54 +16,59 @@ export default async function HomePage() {
   const featured = products.slice(0, 30);
 
   return (
-    <div className="space-y-4">
-      <h1 className="sr-only">
-        {SITE.name} — {SITE.tagline}
-      </h1>
-
+    <div className="-mt-6 space-y-14 pb-6">
       <HomeHero />
 
-      <section className="rounded-xl bg-surface p-4 shadow-card">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-subtle">หมวดหมู่</h2>
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
-          {CATEGORIES.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/category/${c.slug}`}
-              className="group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition hover:bg-page"
-            >
-              <span className="relative h-14 w-14 overflow-hidden rounded-full ring-1 ring-hairline transition group-hover:ring-2 group-hover:ring-brand">
-                <Image src={`/cat/${c.slug}.jpg`} alt={c.name} fill sizes="56px" className="object-cover" />
-              </span>
-              <span className="text-[11px] leading-tight text-ink">{c.name}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <CategoryTiles />
 
-      <section className="rounded-xl bg-surface p-4 shadow-card">
-        <div className="section-title flex items-center justify-between">
-          <span>สินค้าแนะนำประจำวัน</span>
-          <span className="text-xs font-normal normal-case text-subtle">{products.length} รายการ</span>
+      <section>
+        <div className="flex items-end justify-between">
+          <h2 className="section-title">สินค้าแนะนำประจำวัน</h2>
+          <span className="text-xs text-subtle">{products.length} รายการ</span>
         </div>
-        <div className="mt-3">
+        <div className="mt-5">
           <ProductExplorer products={featured} showCategoryFilter categories={CATEGORIES} />
         </div>
       </section>
 
       {guides.length > 0 && (
-        <section className="rounded-xl bg-surface p-4 shadow-card">
-          <div className="section-title">คู่มือเลือกซื้อ</div>
-          <ul className="mt-3 grid gap-3 sm:grid-cols-2">
-            {guides.map((g) => (
-              <li key={g.slug} className="rounded-lg border border-hairline p-4 transition hover:border-brand hover:shadow-card">
-                <Link href={`/guides/${g.slug}`} className="font-semibold text-ink hover:text-brand">
-                  {g.title}
-                </Link>
-                <p className="mt-1 line-clamp-2 text-sm text-subtle">{g.summary}</p>
-                {g.updatedAt && <p className="mt-2 text-xs text-subtle">อัปเดต {thaiDate(g.updatedAt)}</p>}
-              </li>
-            ))}
+        <section>
+          <div className="flex items-end justify-between">
+            <h2 className="section-title">คู่มือเลือกซื้อ</h2>
+            <Link href="/guides" className="cta-link text-sm">
+              ดูทั้งหมด
+            </Link>
+          </div>
+          <ul className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {guides.slice(0, 6).map((g) => {
+              const img = guideImage(g.slug);
+              return (
+                <li key={g.slug} className="group">
+                  <Link href={`/guides/${g.slug}`} className="block">
+                    {img && (
+                      <span className="relative block aspect-[16/10] overflow-hidden rounded-lg">
+                        <Image
+                          src={img}
+                          alt={g.title}
+                          fill
+                          sizes="(max-width:640px) 100vw, 380px"
+                          className="object-cover transition duration-300 group-hover:scale-105"
+                        />
+                      </span>
+                    )}
+                    <span className="mt-3 block font-bold leading-snug tracking-tight group-hover:underline">
+                      {g.title}
+                    </span>
+                    <span className="mt-1 line-clamp-2 block text-sm text-subtle">{g.summary}</span>
+                    {g.updatedAt && (
+                      <span className="mt-2 block text-[11px] uppercase tracking-wide text-subtle">
+                        อัปเดต {thaiDate(g.updatedAt)}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}

@@ -69,7 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <JsonLd data={websiteLd()} />
         <SiteHeader />
-        <div className="mx-auto max-w-content px-3 py-4 sm:px-4">{children}</div>
+        <div className="mx-auto max-w-content px-4 pt-6">{children}</div>
         <SiteFooter />
       </body>
     </html>

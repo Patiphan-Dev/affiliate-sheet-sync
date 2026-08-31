@@ -20,7 +20,7 @@ export default async function GuidesIndex() {
   return (
     <div className="space-y-6">
       <Breadcrumbs trail={[{ name: 'หน้าแรก', path: '/' }, { name: 'คู่มือเลือกซื้อ', path: '/guides' }]} />
-      <h1 className="text-3xl text-brand">คู่มือเลือกซื้อ</h1>
+      <h1 className="text-3xl font-bold tracking-tight">คู่มือเลือกซื้อ</h1>
       <p className="max-w-2xl text-ink/75">
         รวมบทความช่วยตัดสินใจก่อนซื้อ — เทียบสเปก ข้อดีข้อเสีย และรุ่นที่คุ้มที่สุดในแต่ละงบ
       </p>
@@ -30,7 +30,7 @@ export default async function GuidesIndex() {
           {guides.map((g) => {
             const img = guideImage(g.slug);
             return (
-              <li key={g.slug} className="overflow-hidden rounded-xl border border-hairline bg-surface transition hover:border-brand hover:shadow-card">
+              <li key={g.slug} className="overflow-hidden rounded-xl border border-hairline bg-surface transition">
                 <Link href={`/guides/${g.slug}`} className="block">
                   {img && (
                     <span className="relative block aspect-[16/9]">
