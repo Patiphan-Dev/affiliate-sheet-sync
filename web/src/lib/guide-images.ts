@@ -5,6 +5,7 @@ const WITH_IMAGE = new Set([
   'camping-stove-guide-thailand',
   'camping-light-headlamp-guide',
   'camping-checklist-beginner-2d1n',
+  'camp-chair-table-guide',
 ]);
 
 /** Category slugs that have an image in /public/cat — used as a fallback. */
