@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const g = await getGuideBySlug(slug);
   if (!g) return {};
-  const img = guideImage(g.slug);
+  const img = guideImage(g.slug, g.refId);
   return {
     title: g.title,
     description: g.summary.slice(0, 160),
@@ -45,7 +45,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
   const cat = getCategory(g.refId);
   const picks = cat ? productsInCategory(await getProducts(), cat.slug).slice(0, 6) : [];
-  const heroImg = guideImage(g.slug);
+  const heroImg = guideImage(g.slug, g.refId);
 
   const trail = [
     { name: 'หน้าแรก', path: '/' },

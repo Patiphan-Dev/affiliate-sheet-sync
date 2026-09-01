@@ -28,7 +28,7 @@ export default async function GuidesIndex() {
       {guides.length ? (
         <ul className="grid gap-4 sm:grid-cols-2">
           {guides.map((g) => {
-            const img = guideImage(g.slug);
+            const img = guideImage(g.slug, g.refId);
             return (
               <li key={g.slug} className="overflow-hidden rounded-xl border border-hairline bg-surface transition">
                 <Link href={`/guides/${g.slug}`} className="block">
