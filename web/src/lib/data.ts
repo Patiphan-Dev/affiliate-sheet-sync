@@ -5,7 +5,12 @@ import { slugify, normalizeSlug } from './slug';
 import mockFeed from '@/data/mock-feed.json';
 import seedArticles from '@/data/seed-articles.json';
 
-const FEED_URL = process.env.FEED_URL?.replace(/\/$/, '') ?? '';
+// Public Apps Script feed. Overridable via the FEED_URL env var; the default
+// keeps deploys working without any Vercel env config (the endpoint is a plain
+// public GET, not a secret).
+const DEFAULT_FEED_URL =
+  'https://script.google.com/macros/s/AKfycby_qKCNvD1E0IPlIURdTF1H1taGZ8qdNz4bstGw3Js_m5eJFgMZ579RruZqRTRVeXyqiw/exec';
+const FEED_URL = (process.env.FEED_URL || DEFAULT_FEED_URL).replace(/\/$/, '');
 const REVALIDATE = 60 * 60; // rebuild pages against the Sheet at most hourly
 
 interface RawProduct {
