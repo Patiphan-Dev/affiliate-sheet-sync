@@ -65,6 +65,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="th" className={body.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFlash }} />
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
       <body>
         <JsonLd data={websiteLd()} />

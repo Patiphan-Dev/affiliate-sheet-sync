@@ -22,7 +22,7 @@ export function ProductCard({ product: p }: { product: Product }) {
               alt={p.name}
               fill
               sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 300px"
-              className="object-cover transition duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-hairline">
@@ -34,6 +34,9 @@ export function ProductCard({ product: p }: { product: Product }) {
               -{p.discountPercent}%
             </span>
           )}
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-ink/90 px-2 py-1.5 text-center text-[11px] font-semibold uppercase tracking-wide text-page transition-transform duration-300 group-hover:translate-y-0">
+            ดูที่ {platformLabel(p.platform)} →
+          </span>
         </div>
 
         <div className="mt-2.5">

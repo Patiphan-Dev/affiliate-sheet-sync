@@ -26,8 +26,17 @@
     color-scheme: dark;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply overflow-x-hidden bg-page text-ink font-sans antialiased;
+  }
+
+  ::selection {
+    background: rgb(var(--ink));
+    color: rgb(var(--bg-page));
   }
 
   h1,
@@ -36,20 +45,52 @@
     @apply font-bold tracking-tight;
     text-wrap: balance;
   }
+
+  /* keyboard focus only */
+  :focus-visible {
+    outline: 2px solid rgb(var(--ink));
+    outline-offset: 2px;
+  }
 }
 
 @layer components {
-  /* big left-aligned editorial section header */
   .section-title {
-    @apply text-xl font-bold tracking-tight sm:text-2xl;
+    @apply text-2xl font-bold tracking-tight sm:text-3xl;
   }
-  /* small uppercase label */
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-subtle;
+    @apply text-[11px] font-semibold uppercase tracking-[0.16em] text-subtle;
   }
-  /* text link that reads as a CTA (Nike-style underline) */
+  /* Nike-style underline link — the rule grows from the left on hover */
   .cta-link {
-    @apply inline-flex items-center gap-1 border-b-2 border-current pb-0.5 text-sm font-semibold;
+    @apply relative inline-flex items-center gap-1.5 pb-1 text-sm font-semibold;
+  }
+  .cta-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @media (hover: hover) {
+    .cta-link::after {
+      transform: scaleX(0);
+    }
+    .cta-link:hover::after {
+      transform: scaleX(1);
+    }
+  }
+  .cta-link svg,
+  .cta-link .arrow {
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .cta-link:hover svg,
+  .cta-link:hover .arrow {
+    transform: translateX(4px);
   }
 }
 
@@ -58,5 +99,81 @@
     width: 100vw;
     margin-left: 50%;
     transform: translateX(-50%);
+  }
+
+  /* scroll-reveal — see components/Reveal.tsx */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .kenburns {
+    animation: kenburns 22s ease-out both;
+  }
+
+  /* above-the-fold entrance (no scroll trigger) */
+  .rise {
+    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .marquee-track {
+    animation: marquee 38s linear infinite;
+  }
+  @media (hover: hover) {
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .rise,
+  .kenburns,
+  .marquee-track {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
