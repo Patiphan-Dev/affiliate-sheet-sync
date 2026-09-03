@@ -5,10 +5,10 @@ import { CATEGORIES } from '@/lib/categories';
 import { ProductExplorer } from '@/components/ProductExplorer';
 import { HomeHero, CategoryTiles, BrandMarquee } from '@/components/HomeHero';
 import { Reveal } from '@/components/Reveal';
+import { GuideCard } from '@/components/GuideCard';
 import { guideImage } from '@/lib/guide-images';
 import { JsonLd } from '@/components/JsonLd';
 import { itemListLd } from '@/lib/schema';
-import { thaiDate } from '@/lib/format';
 
 export const revalidate = 3600;
 
@@ -76,36 +76,17 @@ export default async function HomePage() {
               ดูทั้งหมด <span className="arrow">→</span>
             </Link>
           </Reveal>
-          <ul className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {guides.slice(0, 6).map((g, i) => {
-              const img = guideImage(g.slug, g.refId);
-              return (
-                <Reveal key={g.slug} as="li" delay={(i % 3) * 70} className="group">
-                  <Link href={`/guides/${g.slug}`} className="block">
-                    {img && (
-                      <span className="relative block aspect-[16/10] overflow-hidden rounded-lg">
-                        <Image
-                          src={img}
-                          alt={g.title}
-                          fill
-                          sizes="(max-width:640px) 100vw, 380px"
-                          className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-105"
-                        />
-                      </span>
-                    )}
-                    <span className="mt-3 block font-bold leading-snug tracking-tight underline-offset-4 group-hover:underline">
-                      {g.title}
-                    </span>
-                    <span className="mt-1 line-clamp-2 block text-sm text-subtle">{g.summary}</span>
-                    {g.updatedAt && (
-                      <span className="mt-2 block text-[11px] uppercase tracking-wide text-subtle">
-                        อัปเดต {thaiDate(g.updatedAt)}
-                      </span>
-                    )}
-                  </Link>
-                </Reveal>
-              );
-            })}
+          <ul className="mt-6 divide-y divide-hairline sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:divide-y-0 lg:grid-cols-3">
+            {guides.slice(0, 6).map((g, i) => (
+              <Reveal
+                key={g.slug}
+                as="li"
+                delay={(i % 3) * 70}
+                className="py-4 first:pt-0 last:pb-0 sm:py-0"
+              >
+                <GuideCard guide={g} />
+              </Reveal>
+            ))}
           </ul>
         </section>
       )}

@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
 import { getGuides } from '@/lib/data';
-import { guideImage } from '@/lib/guide-images';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { thaiDate } from '@/lib/format';
+import { GuideCard } from '@/components/GuideCard';
 import { SITE } from '@/lib/site';
 
 export const revalidate = 3600;
@@ -26,26 +23,12 @@ export default async function GuidesIndex() {
       </p>
 
       {guides.length ? (
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {guides.map((g) => {
-            const img = guideImage(g.slug, g.refId);
-            return (
-              <li key={g.slug} className="overflow-hidden rounded-xl border border-hairline bg-surface transition">
-                <Link href={`/guides/${g.slug}`} className="block">
-                  {img && (
-                    <span className="relative block aspect-[16/9]">
-                      <Image src={img} alt={g.title} fill sizes="(max-width:640px) 100vw, 400px" className="object-cover" />
-                    </span>
-                  )}
-                  <span className="block p-5">
-                    <span className="text-lg font-semibold text-ink">{g.title}</span>
-                    <span className="mt-1 line-clamp-3 block text-sm text-ink/70">{g.summary}</span>
-                    {g.updatedAt && <span className="mt-2 block text-xs text-ink/45">อัปเดต {thaiDate(g.updatedAt)}</span>}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
+        <ul className="divide-y divide-hairline sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:divide-y-0">
+          {guides.map((g) => (
+            <li key={g.slug} className="py-4 first:pt-0 last:pb-0 sm:py-0">
+              <GuideCard guide={g} />
+            </li>
+          ))}
         </ul>
       ) : (
         <p className="text-sm text-ink/60">ยังไม่มีบทความ กลับมาดูใหม่เร็ว ๆ นี้</p>
