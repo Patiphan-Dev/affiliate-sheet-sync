@@ -132,6 +132,19 @@
       animation-play-state: paused;
     }
   }
+
+  /* hide the scrollbar on horizontal strips (mobile nav) */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* "there's more →" hint — a gentle rightward nudge */
+  .nudge-x {
+    animation: nudge-x 1.5s ease-in-out infinite;
+  }
 }
 
 @keyframes rise {
@@ -163,6 +176,16 @@
   }
 }
 
+@keyframes nudge-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -170,7 +193,8 @@
   .reveal,
   .rise,
   .kenburns,
-  .marquee-track {
+  .marquee-track,
+  .nudge-x {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;

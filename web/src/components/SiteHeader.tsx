@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CATEGORIES } from '@/lib/categories';
 import { SITE } from '@/lib/site';
 import { ThemeToggle } from './ThemeToggle';
+import { NavStrip } from './NavStrip';
 
 const NAV = [
   { name: 'ดีลลดราคา', href: '/deals' },
@@ -71,24 +72,14 @@ export function SiteHeader() {
       </div>
 
       <nav
-        className={`mx-auto grid max-w-content overflow-hidden px-4 transition-[grid-template-rows,opacity,padding] duration-300 ${
+        className={`mx-auto grid max-w-content grid-cols-[minmax(0,1fr)] overflow-hidden px-4 transition-[grid-template-rows,opacity,padding] duration-300 ${
           // keep the nav reachable on mobile (no hamburger); only condense on ≥sm
           scrolled
             ? 'grid-rows-[1fr] pb-2.5 opacity-100 sm:grid-rows-[0fr] sm:pb-0 sm:opacity-0'
             : 'grid-rows-[1fr] pb-2.5 opacity-100'
         }`}
       >
-        <div className="flex min-h-0 gap-6 overflow-x-auto text-[11px] font-semibold uppercase tracking-[0.12em]">
-          {NAV.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className="relative whitespace-nowrap py-1 text-subtle transition-colors hover:text-ink"
-            >
-              {n.name}
-            </Link>
-          ))}
-        </div>
+        <NavStrip items={NAV} />
       </nav>
     </header>
   );
