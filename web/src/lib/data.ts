@@ -13,6 +13,18 @@ const DEFAULT_FEED_URL =
 const FEED_URL = (process.env.FEED_URL || DEFAULT_FEED_URL).replace(/\/$/, '');
 const REVALIDATE = 60 * 60; // rebuild pages against the Sheet at most hourly
 
+// Bundled mock/seed JSON is a dev convenience only. Baking it into a production
+// build ships placeholder images and dead affiliate links to real visitors, so
+// outside dev a broken feed has to fail the build instead of falling back.
+const ALLOW_FALLBACK = process.env.NODE_ENV !== 'production';
+
+function feedFailure(reason: string): Error {
+  return new Error(
+    `[data] ${reason} — refusing to build against bundled mock data. ` +
+      'Check FEED_URL and that the Apps Script web app is reachable.',
+  );
+}
+
 interface RawProduct {
   platform?: string;
   id?: string | number;
@@ -36,13 +48,18 @@ const HOT_COMMISSION = 12; // % — at/above this a product gets a "ขายด
 const NEW_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
 
 async function fetchFeed<T>(query: string, fallback: T): Promise<T> {
-  if (!FEED_URL) return fallback;
+  if (!FEED_URL) {
+    if (!ALLOW_FALLBACK) throw feedFailure('FEED_URL is empty');
+    return fallback;
+  }
   try {
     const res = await fetch(`${FEED_URL}${query}`, { next: { revalidate: REVALIDATE } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return (await res.json()) as T;
   } catch (err) {
-    console.warn(`[data] feed ${query} failed (${(err as Error).message}) — using bundled fallback`);
+    const reason = `feed ${query} failed (${(err as Error).message})`;
+    if (!ALLOW_FALLBACK) throw feedFailure(reason);
+    console.warn(`[data] ${reason} — using bundled fallback`);
     return fallback;
   }
 }
@@ -111,6 +128,9 @@ export function getProducts(): Promise<Product[]> {
         seen.add(p.slug);
         out.push(p);
       }
+      // A reachable feed that yields nothing usable is just as broken as a 500:
+      // the shape may have drifted (missing id/name/link) since the last deploy.
+      if (out.length === 0 && !ALLOW_FALLBACK) throw feedFailure('feed returned 0 usable products');
       return out.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     });
   }
