@@ -47,21 +47,44 @@ interface RawProduct {
 const HOT_COMMISSION = 12; // % — at/above this a product gets a "ขายดี" flag
 const NEW_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
 
+// `next build` forks a worker per route group and each one hits the feed on its
+// own, so Apps Script sees a burst of concurrent requests and throttles part of
+// it. Retrying with backoff is what keeps a build from being half real data and
+// half fallback.
+const FETCH_ATTEMPTS = 3;
+const RETRY_BACKOFF_MS = [1_000, 3_000];
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchOnce<T>(query: string): Promise<T> {
+  const res = await fetch(`${FEED_URL}${query}`, { next: { revalidate: REVALIDATE } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as T;
+}
+
 async function fetchFeed<T>(query: string, fallback: T): Promise<T> {
   if (!FEED_URL) {
     if (!ALLOW_FALLBACK) throw feedFailure('FEED_URL is empty');
     return fallback;
   }
-  try {
-    const res = await fetch(`${FEED_URL}${query}`, { next: { revalidate: REVALIDATE } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return (await res.json()) as T;
-  } catch (err) {
-    const reason = `feed ${query} failed (${(err as Error).message})`;
-    if (!ALLOW_FALLBACK) throw feedFailure(reason);
-    console.warn(`[data] ${reason} — using bundled fallback`);
-    return fallback;
+
+  let lastError = '';
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt++) {
+    try {
+      return await fetchOnce<T>(query);
+    } catch (err) {
+      lastError = (err as Error).message;
+      const backoff = RETRY_BACKOFF_MS[attempt - 1];
+      if (backoff === undefined) break;
+      console.warn(`[data] feed ${query} attempt ${attempt} failed (${lastError}) — retrying`);
+      await sleep(backoff);
+    }
   }
+
+  const reason = `feed ${query} failed after ${FETCH_ATTEMPTS} attempts (${lastError})`;
+  if (!ALLOW_FALLBACK) throw feedFailure(reason);
+  console.warn(`[data] ${reason} — using bundled fallback`);
+  return fallback;
 }
 
 function num(v: unknown): number | null {
