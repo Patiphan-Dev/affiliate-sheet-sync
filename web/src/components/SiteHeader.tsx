@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/categories';
 import { SITE } from '@/lib/site';
@@ -38,13 +39,25 @@ export function SiteHeader() {
           scrolled ? 'py-2' : 'py-3'
         }`}
       >
-        <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
-          <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden>
-            <path d="M32 12 8 52h48L32 12Z" fill="none" stroke="currentColor" strokeWidth="6" strokeLinejoin="round" />
-            <path d="M32 12v40" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
-            <path d="m22 52 10-17 10 17Z" fill="currentColor" />
-          </svg>
-          {SITE.name}
+        <Link href="/" className="flex shrink-0 items-center" aria-label={`${SITE.name} — หน้าแรก`}>
+          {/* Two lockups: the wordmark is dark ink on light, white on dark. */}
+          <Image
+            src="/brand/logo-lockup.png"
+            alt={SITE.name}
+            width={547}
+            height={128}
+            priority
+            className="h-8 w-auto dark:hidden"
+          />
+          <Image
+            src="/brand/logo-lockup-dark.png"
+            alt=""
+            aria-hidden
+            width={547}
+            height={128}
+            priority
+            className="hidden h-8 w-auto dark:block"
+          />
         </Link>
 
         <form action="/search" className="ml-auto hidden items-center border border-hairline sm:flex">
