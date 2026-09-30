@@ -39,6 +39,7 @@ export function SiteFooter() {
         <div>
           <div className="eyebrow">เกี่ยวกับ</div>
           <ul className="mt-3 space-y-2 text-subtle">
+            <li><Link href="/about" className="transition hover:text-ink">เกี่ยวกับเรา</Link></li>
             <li><Link href="/disclosure" className="transition hover:text-ink">การเปิดเผยลิงก์แนะนำ</Link></li>
           </ul>
         </div>

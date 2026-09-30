@@ -13,6 +13,13 @@ export async function GET() {
     '',
     `> ${SITE.tagline}. ${SITE.description}`,
     '',
+    'ราคาและข้อมูลสินค้าดึงจาก Shopee และ Lazada อัตโนมัติ อัปเดตอย่างน้อยทุกชั่วโมง ลิงก์สินค้าเป็นลิงก์แนะนำ (affiliate) — ดูรายละเอียดที่หน้าการเปิดเผยลิงก์',
+    '',
+    '## เกี่ยวกับเว็บ',
+    `- [เกี่ยวกับ${SITE.name}](${SITE.url}/about): เว็บนี้คืออะไร คัดสินค้าอย่างไร รายได้มาจากไหน`,
+    `- [การเปิดเผยลิงก์แนะนำสินค้า](${SITE.url}/disclosure)`,
+    `- [เนื้อหาฉบับเต็มแบบข้อความ](${SITE.url}/llms-full.txt): คู่มือและถามตอบทุกหมวดในไฟล์เดียว`,
+    '',
     '## หมวดสินค้า',
     ...CATEGORIES.filter((c) => c.slug !== 'accessories').map(
       (c) => `- [${c.name}](${SITE.url}/category/${c.slug}): ${c.intro}`,

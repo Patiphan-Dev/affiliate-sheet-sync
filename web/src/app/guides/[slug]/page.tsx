@@ -4,13 +4,14 @@ import { notFound } from 'next/navigation';
 import { getGuides, getGuideBySlug, getProducts } from '@/lib/data';
 import { getCategory, productsInCategory } from '@/lib/categories';
 import { guideImage } from '@/lib/guide-images';
+import { absoluteUrl } from '@/lib/site';
 import { socialMetadata } from '@/lib/social';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { FaqList } from '@/components/FaqList';
 import { ProductCard } from '@/components/ProductCard';
 import { ArticleBody, AffiliateNote, ComparisonTable, Tldr } from '@/components/content';
 import { JsonLd } from '@/components/JsonLd';
-import { articleLd, breadcrumbLd, faqLd } from '@/lib/schema';
+import { articleLd, breadcrumbLd, faqLd, itemListLd } from '@/lib/schema';
 import { thaiDate } from '@/lib/format';
 
 export const revalidate = 3600;
@@ -98,7 +99,14 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         </section>
       )}
 
-      <JsonLd data={[breadcrumbLd(trail), articleLd(g, `/guides/${g.slug}`), faqLd(g.faq)]} />
+      <JsonLd
+        data={[
+          breadcrumbLd(trail),
+          articleLd(g, `/guides/${g.slug}`, heroImg ? [absoluteUrl(heroImg)] : []),
+          picks.length ? itemListLd(picks, `/guides/${g.slug}`, `รุ่นแนะนำใน ${g.title}`) : null,
+          faqLd(g.faq),
+        ]}
+      />
     </article>
   );
 }

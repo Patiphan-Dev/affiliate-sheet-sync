@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import { SITE, absoluteUrl } from '@/lib/site';
 
-/** Site-wide 1200×630 share image (src/app/opengraph-image.jpg, served at this path). */
-const DEFAULT_SHARE_IMAGE = '/opengraph-image.jpg';
-
 interface SocialInput {
   title: string;
   description: string;
@@ -22,7 +19,7 @@ interface SocialInput {
  * otherwise link previews lose their image on that page.
  */
 export function socialMetadata(input: SocialInput): Pick<Metadata, 'openGraph' | 'twitter'> {
-  const image = absoluteUrl(input.image || DEFAULT_SHARE_IMAGE);
+  const image = absoluteUrl(input.image || SITE.shareImage);
   return {
     openGraph: {
       type: input.type ?? 'website',

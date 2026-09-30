@@ -123,7 +123,7 @@ export default async function GearPage({ params }: { params: Promise<{ slug: str
         data={[
           breadcrumbLd(trail),
           productLd(p, review),
-          review ? articleLd(review, `/gear/${p.slug}`) : null,
+          review ? articleLd(review, `/gear/${p.slug}`, p.image ? [p.image] : []) : null,
           faqLd(review?.faq?.length ? review.faq : cat?.faq ?? []),
         ]}
       />

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { socialMetadata } from '@/lib/social';
 import { getProducts } from '@/lib/data';
 import { CATEGORIES } from '@/lib/categories';
 import { ProductExplorer } from '@/components/ProductExplorer';
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
   title: 'ดีลลดราคาอุปกรณ์แคมป์ปิ้ง',
   description: 'รวมสินค้าแคมป์ปิ้งที่กำลังลดราคาจาก Shopee และ Lazada อัปเดตอัตโนมัติทุกวัน',
   alternates: { canonical: '/deals' },
+  ...socialMetadata({
+    title: 'ดีลลดราคาอุปกรณ์แคมป์ปิ้ง',
+    description: 'รวมสินค้าแคมป์ปิ้งที่กำลังลดราคาจาก Shopee และ Lazada อัปเดตอัตโนมัติทุกวัน',
+    path: '/deals',
+  }),
 };
 
 export default async function DealsPage() {

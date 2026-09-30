@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { socialMetadata } from '@/lib/social';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { SITE } from '@/lib/site';
 
@@ -6,6 +7,11 @@ export const metadata: Metadata = {
   title: 'การเปิดเผยลิงก์แนะนำสินค้า',
   description: `${SITE.name} ใช้ลิงก์แนะนำสินค้า (affiliate) — อธิบายว่าทำงานอย่างไรและกระทบผู้ใช้อย่างไร`,
   alternates: { canonical: '/disclosure' },
+  ...socialMetadata({
+    title: 'การเปิดเผยลิงก์แนะนำสินค้า',
+    description: `${SITE.name} ใช้ลิงก์แนะนำสินค้า (affiliate) — อธิบายว่าทำงานอย่างไรและกระทบผู้ใช้อย่างไร`,
+    path: '/disclosure',
+  }),
 };
 
 export default function DisclosurePage() {

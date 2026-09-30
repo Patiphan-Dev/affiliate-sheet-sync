@@ -70,7 +70,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <JsonLd
         data={[
           breadcrumbLd(trail),
-          collectionLd(cat, products.length),
+          collectionLd(cat, products.length, `/cat/${cat.slug}.jpg`),
           itemListLd(products, `/category/${cat.slug}`),
           faqLd(cat.faq),
         ]}

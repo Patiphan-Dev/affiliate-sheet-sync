@@ -4,7 +4,7 @@ import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { JsonLd } from '@/components/JsonLd';
-import { websiteLd } from '@/lib/schema';
+import { organizationLd, websiteLd } from '@/lib/schema';
 import { SITE } from '@/lib/site';
 
 const body = Noto_Sans_Thai({
@@ -24,7 +24,10 @@ export const metadata: Metadata = {
     'ไฟคาดหัว', 'เป้เดินป่า', 'กระติกน้ำแข็ง', 'เดินป่า', 'ตั้งแคมป์',
     'รีวิวอุปกรณ์แคมป์', 'ราคา Shopee Lazada',
   ],
-  alternates: { canonical: '/' },
+  alternates: {
+    canonical: '/',
+    types: { 'application/rss+xml': [{ url: '/feed.xml', title: SITE.name }] },
+  },
   openGraph: {
     type: 'website',
     locale: SITE.locale,
@@ -70,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
       </head>
       <body>
-        <JsonLd data={websiteLd()} />
+        <JsonLd data={[organizationLd(), websiteLd()]} />
         <SiteHeader />
         <div className="mx-auto max-w-content px-4 pt-6">{children}</div>
         <SiteFooter />

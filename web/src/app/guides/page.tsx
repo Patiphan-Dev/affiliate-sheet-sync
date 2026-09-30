@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { socialMetadata } from '@/lib/social';
 import { getGuides } from '@/lib/data';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { GuideCard } from '@/components/GuideCard';
@@ -10,6 +11,11 @@ export const metadata: Metadata = {
   title: 'คู่มือเลือกซื้ออุปกรณ์แคมป์ปิ้ง',
   description: 'บทความเปรียบเทียบและแนะนำวิธีเลือกซื้อเต็นท์ ถุงนอน เตา และอุปกรณ์แคมป์ปิ้งอื่น ๆ',
   alternates: { canonical: '/guides' },
+  ...socialMetadata({
+    title: 'คู่มือเลือกซื้ออุปกรณ์แคมป์ปิ้ง',
+    description: 'บทความเปรียบเทียบและแนะนำวิธีเลือกซื้อเต็นท์ ถุงนอน เตา และอุปกรณ์แคมป์ปิ้งอื่น ๆ',
+    path: '/guides',
+  }),
 };
 
 export default async function GuidesIndex() {
