@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getGuides, getGuideBySlug, getProducts } from '@/lib/data';
 import { getCategory, productsInCategory } from '@/lib/categories';
 import { guideImage } from '@/lib/guide-images';
+import { socialMetadata } from '@/lib/social';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { FaqList } from '@/components/FaqList';
 import { ProductCard } from '@/components/ProductCard';
@@ -11,7 +12,6 @@ import { ArticleBody, AffiliateNote, ComparisonTable, Tldr } from '@/components/
 import { JsonLd } from '@/components/JsonLd';
 import { articleLd, breadcrumbLd, faqLd } from '@/lib/schema';
 import { thaiDate } from '@/lib/format';
-import { SITE } from '@/lib/site';
 
 export const revalidate = 3600;
 
@@ -28,13 +28,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: g.title,
     description: g.summary.slice(0, 160),
     alternates: { canonical: `/guides/${g.slug}` },
-    openGraph: {
+    ...socialMetadata({
       title: g.title,
       description: g.summary.slice(0, 200),
-      url: `${SITE.url}/guides/${g.slug}`,
+      path: `/guides/${g.slug}`,
+      image: img,
       type: 'article',
-      images: img ? [img] : undefined,
-    },
+    }),
   };
 }
 

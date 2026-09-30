@@ -11,7 +11,7 @@ import { ArticleBody, AffiliateNote, ComparisonTable, Tldr } from '@/components/
 import { JsonLd } from '@/components/JsonLd';
 import { articleLd, breadcrumbLd, faqLd, productLd } from '@/lib/schema';
 import { baht, platformLabel, thaiDate } from '@/lib/format';
-import { SITE } from '@/lib/site';
+import { socialMetadata } from '@/lib/social';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -31,12 +31,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: p.name,
     description: desc.slice(0, 160),
     alternates: { canonical: `/gear/${p.slug}` },
-    openGraph: {
+    ...socialMetadata({
       title: p.name,
       description: desc.slice(0, 200),
-      url: `${SITE.url}/gear/${p.slug}`,
-      images: p.image ? [p.image] : undefined,
-    },
+      path: `/gear/${p.slug}`,
+      image: p.image,
+    }),
   };
 }
 

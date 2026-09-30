@@ -9,6 +9,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbLd, collectionLd, faqLd, itemListLd } from '@/lib/schema';
 import { SITE } from '@/lib/site';
+import { socialMetadata } from '@/lib/social';
 
 export const revalidate = 3600;
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${cat.name} — รวมรุ่นน่าซื้อ`,
     description: cat.intro,
     alternates: { canonical: `/category/${cat.slug}` },
-    openGraph: { title: `${cat.name} — ${SITE.name}`, description: cat.intro, url: `${SITE.url}/category/${cat.slug}` },
+    ...socialMetadata({ title: `${cat.name} — ${SITE.name}`, description: cat.intro, path: `/category/${cat.slug}` }),
   };
 }
 
