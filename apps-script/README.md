@@ -23,8 +23,11 @@ same name and paste its contents:
 
 | File | Type |
 |---|---|
-| `Config.gs` `SheetLib.gs` `Captions.gs` `FbPage.gs` `WebApp.gs` `Admin.gs` `Triggers.gs` | Script (`.gs`) |
+| `Config.gs` `SheetLib.gs` `Gemini.gs` `Sanitize.gs` `Captions.gs` `Reviews.gs` `FbPage.gs` `WebApp.gs` `Admin.gs` `Triggers.gs` | Script (`.gs`) |
 | `Admin.html` | HTML |
+
+Or paste the single `AllInOne.gs` instead of the `.gs` files. It is generated —
+after editing any `.gs` file run `./build-allinone.sh` to rebuild it.
 
 ## 2. Script properties
 
@@ -56,7 +59,19 @@ Project Settings (gear icon) → **Script properties** → add:
 
 Editor → run **`runOnceNow`** once, approve the OAuth scopes, check **Executions** for errors.
 Then run **`installTriggers`** → schedules: `syncContent` + `generateCaptions` hourly,
-`postNextToPage` every 3h. `removeTriggers` stops everything.
+`postNextToPage` every 3h, `buildReviewArticles` every 6h. `removeTriggers` stops everything.
+
+### Review articles for the website
+
+The extension saves the buyer reviews Shopee loads while you browse a product page
+on `shopee.co.th` into the `shopee_reviews` tab. It only reads what the page already
+loaded and never fetches more, so open the review section (and its next pages) of
+each product you want an article for. Reviewer names are not stored.
+
+`buildReviewArticles` writes a Gemini summary into the `articles` tab once a product
+has at least 8 reviews with text, and rewrites it when the pool grows by 50%. Body
+HTML is sanitised to `h3 p ul ol li strong em blockquote` before it is saved. The
+website indexes a product page only once its review article exists.
 
 ## 5. Deploy the web app
 

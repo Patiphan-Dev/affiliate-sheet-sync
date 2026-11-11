@@ -8,7 +8,8 @@ function installTriggers() {
   ScriptApp.newTrigger('syncContent').timeBased().everyHours(1).create();
   ScriptApp.newTrigger('generateCaptions').timeBased().everyHours(1).create();
   ScriptApp.newTrigger('postNextToPage').timeBased().everyHours(3).create();
-  return 'ok — 3 triggers installed';
+  ScriptApp.newTrigger('buildReviewArticles').timeBased().everyHours(6).create();
+  return 'ok — 4 triggers installed';
 }
 
 function removeTriggers() {
