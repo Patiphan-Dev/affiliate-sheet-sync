@@ -14,6 +14,7 @@ import {
   ping as sheetPing, ensureTabs, upsertById, readObjectsMany, appendRows,
 } from './sheet-store.js';
 import { signIn, signOut } from './sheets-auth.js';
+import { handleReviewCapture } from './review-sync.js';
 import { pushLog, broadcast } from './panel-log.js';
 
 const fb = { seenUrls: new Set() };
@@ -31,6 +32,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   switch (msg.type) {
     case 'SHOPEE_PRODUCTS_CAPTURED':    handleCapture('shopee', msg.products); break;
     case 'SHOPEE_SHORT_LINKS_CAPTURED': handleSelection('shopee', msg.links);  break;
+    case 'SHOPEE_REVIEWS_CAPTURED':     handleReviewCapture(msg.reviews);       break;
     case 'LAZADA_PRODUCTS_CAPTURED':    handleCapture('lazada', msg.products); break;
     case 'LAZADA_LINKS_CAPTURED':       handleSelection('lazada', msg.links);  break;
     case 'FB_GROUP_URLS_CAPTURED':      handleFbGroups(msg.groups ?? []);      break;

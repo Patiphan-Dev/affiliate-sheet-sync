@@ -11,6 +11,7 @@ export const TABS = {
   lazada_products: ['item_id', 'name', 'price', 'original_price', 'discount', 'commission_rate', 'rating', 'sold', 'shop', 'image_url', 'product_url', 'affiliate_url', 'updated_at'],
   fb_groups:       ['group_id', 'name', 'url', 'updated_at', 'last_posted_at', 'post_count'],
   post_log:        ['posted_at', 'group_id', 'product_id', 'mode', 'caption_hash'],
+  shopee_reviews:  ['cmt_id', 'item_id', 'shop_id', 'rating_star', 'comment', 'variation', 'reviewed_at', 'updated_at'],
 };
 
 export const TAB_NAMES = Object.keys(TABS);

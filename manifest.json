@@ -43,7 +43,13 @@
       "world": "MAIN"
     },
     {
-      "matches": ["https://affiliate.shopee.co.th/*"],
+      "matches": ["https://shopee.co.th/*"],
+      "js": ["interceptor-shopee-reviews.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://affiliate.shopee.co.th/*", "https://shopee.co.th/*"],
       "js": ["content-shopee.js"],
       "run_at": "document_start",
       "world": "ISOLATED"

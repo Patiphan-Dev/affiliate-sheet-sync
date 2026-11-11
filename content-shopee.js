@@ -21,6 +21,11 @@
         products: data.products,
         url: data.url,
       });
+    } else if (data?.__assShopeeReviews && Array.isArray(data.reviews)) {
+      chrome.runtime.sendMessage({
+        type: 'SHOPEE_REVIEWS_CAPTURED',
+        reviews: data.reviews,
+      });
     } else if (data?.__assShopeeLinks && Array.isArray(data.links)) {
       chrome.runtime.sendMessage({
         type: 'SHOPEE_SHORT_LINKS_CAPTURED',
