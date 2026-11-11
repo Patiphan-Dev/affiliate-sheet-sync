@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProducts, getProductBySlug, getReviewFor } from '@/lib/data';
 import { getCategory } from '@/lib/categories';
+import { isIndexableReview } from '@/lib/indexing';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { FaqList } from '@/components/FaqList';
 import { ProductCard } from '@/components/ProductCard';
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: p.name,
     description: desc.slice(0, 160),
     alternates: { canonical: `/gear/${p.slug}` },
+    ...(isIndexableReview(review) ? {} : { robots: { index: false, follow: true } }),
     ...socialMetadata({
       title: p.name,
       description: desc.slice(0, 200),

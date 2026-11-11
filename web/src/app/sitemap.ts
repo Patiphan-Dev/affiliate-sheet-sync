@@ -3,9 +3,10 @@ import { getProducts, getGuides } from '@/lib/data';
 import { CATEGORIES } from '@/lib/categories';
 import { SITE, absoluteUrl } from '@/lib/site';
 import { guideImage } from '@/lib/guide-images';
+import { getIndexableProductIds } from '@/lib/indexing';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, guides] = await Promise.all([getProducts(), getGuides()]);
+  const [products, guides, indexableIds] = await Promise.all([getProducts(), getGuides(), getIndexableProductIds()]);
   const now = new Date();
 
   const staticUrls: MetadataRoute.Sitemap = [
@@ -23,7 +24,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const productUrls: MetadataRoute.Sitemap = products.map((p) => ({
+  // Only reviewed products: a noindex page in the sitemap sends Search Console mixed signals.
+  const productUrls: MetadataRoute.Sitemap = products.filter((p) => indexableIds.has(p.id)).map((p) => ({
     url: `${SITE.url}/gear/${p.slug}`,
     lastModified: p.updatedAt ? new Date(p.updatedAt) : now,
     ...(p.image ? { images: [p.image] } : {}),
